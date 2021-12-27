@@ -32,14 +32,12 @@ $(document).ready(function(){
     setTimeout(function(){ test(); });
 });
 $(window).on('resize', function(){
-    setTimeout(function(){ test(); }, 500);
+    setTimeout(function(){ test(); });
 });
 $(".navbar-toggler").click(function(){
     $(".navbar-collapse").slideToggle(300);
     setTimeout(function(){ test(); });
 });
-
-
 
 // --------------add active class-on another-page move----------
 jQuery(document).ready(function($){
