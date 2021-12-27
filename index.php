@@ -1,14 +1,24 @@
-<!DOCTYPE html>
+<?php
+
+
+
+?>
+
 <html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <meta name="viewport" content="width=device-width, initial-scale=1">        
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <title>BCWC Dashboard</title>
+        
+        <!--CDNs-->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" media="all">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.css" media="all">
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        
+        <!--Locals-->
         <link rel="stylesheet" href="style.css" media="all">
         <script src="site.js"></script>
     </head>
@@ -24,10 +34,10 @@
                         <div class="left"></div>
                         <div class="right"></div>
                     </div>
-                    <li class="nav-item">
+                    <li class="nav-item active">
                         <a class="nav-link" href="javascript:void(0);"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
                     </li>
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <a class="nav-link" href="javascript:void(0);"><i class="far fa-address-book"></i>Address Book</a>
                     </li>
                     <li class="nav-item">
