@@ -1,9 +1,12 @@
+**This git repo contains one plain text api key to fetch data from redcap. The repo should never be made public without purging the git history.**
+
 [Site](https://bcwc.surgery.wisc.edu/)
 
 ## Technical notes
 
 * navbar lifted from [here](https://codepen.io/j_holtslander/pen/XmpMEp) 
 * Bootstrap 3 was used to support the above
+* Font awesome 4.7 is used for compatability with the above also
 
 ## Connecting (for dev)
 
