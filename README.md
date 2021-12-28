@@ -1,6 +1,9 @@
 [Site](https://bcwc.surgery.wisc.edu/)
 
-Switch to navbar [here](https://codepen.io/j_holtslander/pen/XmpMEp) 
+## Technical notes
+
+* navbar lifted from [here](https://codepen.io/j_holtslander/pen/XmpMEp) 
+* Bootstrap 3 was used to support the above
 
 ## Connecting (for dev)
 
