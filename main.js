@@ -10,9 +10,7 @@ document.getElementById("mobile-button").onclick = () => {
 };
 
 // Setup Nav
-let navBarButtons = document.querySelectorAll("#nav-bar a");
-let mobileNavButtons = document.querySelectorAll("#nav-bar-mobile a");
-let allButtons = [...navBarButtons, ...mobileNavButtons];
+let allButtons = document.querySelectorAll("#nav-bar a, #nav-bar-mobile a");
 const activeClass = ["bg-gray-900", "text-white"];
 const defaultClass = ["text-gray-300", "hover:bg-gray-700", "hover:text-white"];
 allButtons.forEach(btn => {
@@ -40,7 +38,12 @@ let config = [
         title: "Example",
         text: "Hello world! This is an example cell.",
         page: "dash"
-    }, {}, {}, {}, {}, {}
+    },
+    {
+        title: "Example 2",
+        text: "Hello world! This is an example cell.",
+        page: "one"
+    }, {}, {}, {}, {}
 ];
 
 config.forEach(setting => {

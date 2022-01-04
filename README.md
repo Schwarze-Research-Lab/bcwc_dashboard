@@ -6,7 +6,6 @@
 npm install
 npm run dev
 ```
-
 ## Connecting to Production
 
 * Get a static IP issued by wisc from [here](https://access.services.wisc.edu/IPaddress)
