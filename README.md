@@ -6,6 +6,12 @@
 npm install
 npm run dev
 ```
+## Production Deploy
+
+```
+npm run build
+scp -r dist/* bcwc@bcwc.surgery.wisc.edu:~/dashboard/
+```
 ## Connecting to Production
 
 * Get a static IP issued by wisc from [here](https://access.services.wisc.edu/IPaddress)
