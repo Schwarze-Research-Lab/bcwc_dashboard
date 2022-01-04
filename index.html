@@ -49,18 +49,18 @@
             <span class="text-white w-auto ml-1 font-bold">Schwarze Research Lab</span>
           </div>
           <div class="hidden sm:block sm:ml-6">
-            <div class="flex space-x-4">
+            <div id="nav-bar" class="flex space-x-4">
               <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-              <a href="#" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
+              <a href="#dash" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
                 aria-current="page">Dashboard</a>
 
-              <a href="#"
+              <a href="#one"
                 class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">One</a>
 
-              <a href="#"
+              <a href="#two"
                 class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Two</a>
 
-              <a href="#"
+              <a href="#three"
                 class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Three</a>
             </div>
           </div>
@@ -76,24 +76,38 @@
 
     <!-- Mobile menu, show/hide based on menu state. -->
     <div class="sm:hidden hidden" id="mobile-menu">
-      <div class="px-2 pt-2 pb-3 space-y-1">
+      <div id="nav-bar-mobile" class="px-2 pt-2 pb-3 space-y-1">
         <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-        <a href="#" class="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
+        <a href="#dash" class="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
           aria-current="page">Dashboard</a>
 
-        <a href="#"
+        <a href="#one"
           class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">One</a>
 
-        <a href="#"
+        <a href="#two"
           class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Two</a>
 
-        <a href="#"
+        <a href="#three"
           class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Three</a>
       </div>
     </div>
   </nav>
 
-  <div id="content"></div>
+  <div class="p-2 container mx-auto">
+
+    <div id="content" class="grid grid-cols-1 xl:grid-cols-2 gap-4 place-items-center">
+
+      <div class="flex max-w-md py-4 px-8 bg-white shadow-lg rounded-lg my-20">
+        <div>
+          <h2 class="text-gray-800 text-3xl font-semibold text-center"></h2>
+          <p class="mt-2 text-gray-600"> </p>
+          <div></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
 
   <script type="module" src="/main.js"></script>
 </body>
