@@ -1,4 +1,4 @@
-[Site](https://bcwc.surgery.wisc.edu/)
+The [site](https://bcwc.surgery.wisc.edu/) is built using a modern tailwind vite stack with vanilla js
 
 ## Local Dev Deploy
 

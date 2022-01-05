@@ -1,7 +1,14 @@
 import './style.css';
-//import proxyURL from './proxy.php';
 
-//let data = fetch("proxy.php");
+let redcap = [];
+if (window.location.hostname != "localhost") {
+    fetch("proxy.php")
+        .then(response => response.json())
+        .then(data => {
+            redcap = data;
+            console.log("Loaded data from redcap api")
+        });
+}
 let content = document.getElementById("content");
 
 // Setup mobile button
@@ -46,6 +53,7 @@ let config = [
     }, {}, {}, {}, {}
 ];
 
+// Loop over all the config and build cards
 config.forEach(setting => {
     content.appendChild(content.children[0].cloneNode(true));
     content.children[content.children.length - 1]

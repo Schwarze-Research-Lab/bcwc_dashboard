@@ -1,5 +1,5 @@
 <?php
-$token = $_SERVER['REDCAP_TEST_TOKEN']; // /etc/profile.d/bcwc.sh
+$token = trim(file_get_contents("/home/bcwc/secret")); // Read in token from home directory
 $url = 'https://redcap.surgery.wisc.edu/redcap/api/';
 $fields = ['demo_gender', 'demo_race', 'demo_ethnicity'];
 
@@ -18,6 +18,7 @@ $data = [
     'exportDataAccessGroups' => 'false',
     'returnFormat' => 'json'
 ];
+
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -33,4 +34,4 @@ $response = curl_exec($ch);
 curl_close($ch);
 
 header('Content-Type: application/json; charset=utf-8');
-echo $response; # Redcap sends back json
+echo $response;
