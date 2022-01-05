@@ -1,0 +1,398 @@
+{
+    "61d527d463f5e": {
+        "decision_final": "5",
+        "screen_datetime": "2021-01-20 10:17:35"
+    },
+    "61d527d463fcc": {
+        "decision_final": "6",
+        "screen_datetime": "2021-01-20 10:18:00"
+    },
+    "61d527d46400b": {
+        "decision_final": "4",
+        "screen_datetime": "2021-01-20 10:20:00"
+    },
+    "61d527d46400f": {
+        "decision_final": "4",
+        "screen_datetime": "2021-01-20 10:24:00"
+    },
+    "61d527d464012": {
+        "decision_final": "5",
+        "screen_datetime": "2021-01-20 10:26:00"
+    },
+    "61d527d464015": {
+        "screen_neph_exclude": "1",
+        "decision_final": "4",
+        "screen_datetime": "2021-01-20 10:27:00"
+    },
+    "61d527d464019": {
+        "decision_final": "3",
+        "screen_datetime": "2021-01-20 10:28:00"
+    },
+    "61d527d464058": {
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "1",
+        "decision_final": "2",
+        "screen_datetime": "2021-01-20 10:33:00"
+    },
+    "61d527d46405c": {
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "2",
+        "decision_final": "1",
+        "screen_datetime": "2021-01-20 10:35:00",
+        "facit_t0_complete": "1",
+        "rescreen_me": "4"
+    },
+    "61d527d464068": {
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "1",
+        "decision_final": "5",
+        "screen_datetime": "2021-01-20 10:53:00",
+        "rescreen_me": "1",
+        "first_neph_seen": "N03"
+    },
+    "61d527d4640ad": {
+        "screen_site": "999",
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "2",
+        "decision_final": "1",
+        "screen_datetime": "2021-01-20 10:57:00",
+        "rescreen_me": "1",
+        "first_neph_seen": "N12"
+    },
+    "61d527d464100": {
+        "screen_site": "999",
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "2",
+        "decision_final": "1",
+        "screen_datetime": "2021-01-20 11:16:00"
+    },
+    "61d527d464104": {
+        "screen_site": "999",
+        "decision_final": "4",
+        "screen_datetime": "2021-02-10 11:36:00"
+    },
+    "61d527d464108": {
+        "screen_site": "999",
+        "decision_final": "5",
+        "screen_datetime": "2021-02-10 15:36:00"
+    },
+    "61d527d46410c": {
+        "screen_site": "999",
+        "decision_final": "6",
+        "screen_datetime": "2021-02-10 15:51:00"
+    },
+    "61d527d464137": {
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "1",
+        "decision_final": "1",
+        "screen_datetime": "2021-02-16 14:23:00",
+        "rescreen_me": "1"
+    },
+    "61d527d464182": {
+        "screen_site": "999",
+        "decision_final": "5",
+        "screen_datetime": "2021-02-17 08:06:00"
+    },
+    "61d527d464186": {
+        "screen_site": "999",
+        "decision_final": "6",
+        "screen_datetime": "2021-03-09 11:13:00"
+    },
+    "61d527d4641c6": {
+        "screen_site": "999",
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "1",
+        "decision_final": "1",
+        "screen_datetime": "2021-03-11 20:16:00"
+    },
+    "61d527d464209": {
+        "screen_site": "999",
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "3",
+        "decision_final": "3",
+        "screen_datetime": "2021-03-26 09:56:00"
+    },
+    "61d527d464247": {
+        "screen_site": "999",
+        "screen_datetime": "2021-04-06 13:13:00"
+    },
+    "61d527d464286": {
+        "screen_site": "999",
+        "screen_neph_exclude": "0",
+        "decision_final": "1",
+        "screen_datetime": "2021-04-06 14:00:00"
+    },
+    "61d527d4642c8": {
+        "screen_site": "999",
+        "screen_datetime": "2021-04-08 12:09:00"
+    },
+    "61d527d464305": {
+        "decision_final": "6",
+        "screen_datetime": "2021-05-10 14:14:00"
+    },
+    "61d527d464343": {
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "1",
+        "decision_final": "1",
+        "screen_datetime": "2021-01-28 20:49:00",
+        "rescreen_me": "1",
+        "pt_t1_qoc_complete": "0"
+    },
+    "61d527d464392": {
+        "screen_site": "999",
+        "screen_datetime": "2021-02-10 11:36:00"
+    },
+    "61d527d464395": {
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "3",
+        "decision_final": "3",
+        "screen_datetime": "2021-06-03 13:42:00"
+    },
+    "61d527d4643d4": {
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "2",
+        "screen_datetime": "2021-06-15 13:45:00"
+    },
+    "61d527d464412": {
+        "decision_final": "4",
+        "screen_datetime": "2021-04-13 14:25:00"
+    },
+    "61d527d464461": {
+        "decision_final": "4",
+        "screen_datetime": "2021-09-20 09:03:00",
+        "facit_t0_complete": "1"
+    },
+    "61d527d4644a7": {
+        "decision_final": "5",
+        "screen_datetime": "2021-09-27 13:34:00"
+    },
+    "61d527d4644e5": {
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "1",
+        "decision_final": "2",
+        "screen_datetime": "2021-09-27 13:42:00"
+    },
+    "61d527d464525": {
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "1",
+        "decision_final": "1",
+        "screen_datetime": "2021-09-29 16:49:00"
+    },
+    "61d527d464568": {
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "1",
+        "decision_final": "1",
+        "screen_datetime": "2021-10-08 13:56:00"
+    },
+    "61d527d46456b": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-11 14:58:00"
+    },
+    "61d527d46456e": {
+        "screen_neph_exclude": "0",
+        "screen_datetime": "2021-10-11 15:29:00"
+    },
+    "61d527d464572": {
+        "screen_neph_exclude": "0",
+        "screen_datetime": "2021-10-11 15:32:00"
+    },
+    "61d527d464575": {
+        "decision_final": "6",
+        "screen_datetime": "2021-10-11 15:32:00"
+    },
+    "61d527d464578": {
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "2",
+        "decision_final": "1",
+        "screen_datetime": "2021-10-11 15:33:00"
+    },
+    "61d527d46457b": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-11 15:35:00"
+    },
+    "61d527d46457e": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-11 15:37:00"
+    },
+    "61d527d464582": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-11 15:39:00"
+    },
+    "61d527d464584": {
+        "decision_final": "5",
+        "screen_datetime": "2021-10-11 15:39:00"
+    },
+    "61d527d464588": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-11 15:40:00"
+    },
+    "61d527d46458b": {
+        "screen_datetime": "2021-10-11 15:46:00"
+    },
+    "61d527d46458e": {
+        "screen_datetime": "2021-10-11 19:34:00"
+    },
+    "61d527d464591": {
+        "screen_datetime": "2021-10-11 19:34:00"
+    },
+    "61d527d464594": {
+        "screen_datetime": "2021-10-11 20:17:00"
+    },
+    "61d527d464598": {
+        "decision_final": "6",
+        "screen_datetime": "2021-10-11 20:34:00"
+    },
+    "61d527d46459b": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-11 20:42:00"
+    },
+    "61d527d46459e": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-11 20:44:00"
+    },
+    "61d527d4645a1": {
+        "screen_neph_exclude": "0",
+        "screen_datetime": "2021-10-12 09:52:00"
+    },
+    "61d527d4645a4": {
+        "screen_neph_exclude": "0",
+        "screen_datetime": "2021-10-12 09:56:00"
+    },
+    "61d527d4645a8": {
+        "screen_datetime": "2021-10-12 10:04:00"
+    },
+    "61d527d4645ab": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-12 10:04:00"
+    },
+    "61d527d4645ae": {
+        "screen_datetime": "2021-10-12 10:04:00"
+    },
+    "61d527d4645b2": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-12 10:06:00"
+    },
+    "61d527d4645b5": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-12 10:06:00"
+    },
+    "61d527d4645b8": {
+        "decision_final": "6",
+        "screen_datetime": "2021-10-12 10:07:00"
+    },
+    "61d527d4645bb": {
+        "screen_datetime": "2021-10-12 10:08:00"
+    },
+    "61d527d4645c0": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-12 10:09:00"
+    },
+    "61d527d4645c3": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-12 10:10:00"
+    },
+    "61d527d4645c7": {
+        "decision_final": "5",
+        "screen_datetime": "2021-10-13 09:18:00"
+    },
+    "61d527d4645ca": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-13 09:19:00"
+    },
+    "61d527d4645cd": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-13 09:20:00"
+    },
+    "61d527d4645d4": {
+        "screen_datetime": "2021-10-13 20:20:00"
+    },
+    "61d527d4645d8": {
+        "screen_datetime": "2021-10-14 08:54:00"
+    },
+    "61d527d4645da": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-14 08:55:00"
+    },
+    "61d527d4645dd": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-14 08:56:00"
+    },
+    "61d527d4645e0": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-14 08:57:00"
+    },
+    "61d527d4645e3": {
+        "screen_datetime": "2021-10-14 10:10:00"
+    },
+    "61d527d4645e7": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-14 10:11:00"
+    },
+    "61d527d4645e9": {
+        "screen_datetime": "2021-10-14 16:17:00"
+    },
+    "61d527d4645ed": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-15 09:27:00"
+    },
+    "61d527d4645f0": {
+        "screen_datetime": "2021-10-18 09:23:00"
+    },
+    "61d527d4645f3": {
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "1",
+        "decision_final": "1",
+        "screen_datetime": "2021-10-20 12:34:00",
+        "facit_t0_complete": "1",
+        "rescreen_me": "3"
+    },
+    "61d527d4645fc": {
+        "decision_final": "4",
+        "screen_datetime": "2021-10-28 09:04:00",
+        "facit_t0_complete": "1",
+        "rescreen_me": "3"
+    },
+    "61d527d464605": {
+        "decision_final": "4",
+        "screen_datetime": "2021-11-04 09:13:00"
+    },
+    "61d527d464608": {
+        "decision_final": "5",
+        "screen_datetime": "2021-11-04 09:13:00"
+    },
+    "61d527d46460b": {
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "1",
+        "decision_final": "1",
+        "screen_datetime": "2021-11-04 09:57:00",
+        "rescreen_me": "1"
+    },
+    "61d527d46461c": {
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "1",
+        "decision_final": "1",
+        "screen_datetime": "2021-11-05 17:23:00"
+    },
+    "61d527d46461f": {
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "2",
+        "decision_final": "1",
+        "screen_datetime": "2021-11-05 17:34:00"
+    },
+    "61d527d464623": {
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "2",
+        "decision_final": "6",
+        "screen_datetime": "2021-11-05 17:39:00"
+    },
+    "61d527d464626": {
+        "screen_neph_exclude": "0",
+        "screen_approach_method": "1",
+        "decision_final": "6",
+        "screen_datetime": "2021-11-18 15:57:00"
+    },
+    "61d527d46462a": {
+        "decision_final": "4",
+        "screen_datetime": "2021-01-20 10:17:00"
+    }
+}
