@@ -34,4 +34,4 @@ $response = curl_exec($ch);
 curl_close($ch);
 
 header('Content-Type: application/json; charset=utf-8');
-echo $response;
+echo json_encode($response);
