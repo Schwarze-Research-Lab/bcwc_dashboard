@@ -81,12 +81,14 @@ function buildCharts() {
             newest.querySelector('p').textContent = setting.text;
         if (setting.page)
             newest.setAttribute("data-hash", setting.page);
+        if (setting.fn)
+            setting.fn(newest);
     });
 
     // Delete template
     content.children[0].remove();
 };
 
-function enrollment() {
-    // Build enrollment table(s)
+function enrollment(element) {
+    // Build enrollment table(s) in element container
 }
