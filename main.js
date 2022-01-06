@@ -1,6 +1,6 @@
 import './style.css';
 import testCache from './testCache.json';
-import * as chartJS from 'chart.js';
+import Chart from 'chart.js/auto'
 
 let redcap = [];
 let content = document.getElementById("content");
@@ -101,8 +101,32 @@ function buildCards() {
 };
 
 function enrollment(element) {
-    let data = getEnrollemntData();
-    console.log(data);
+    let enro = getEnrollemntData();
+    const data = {
+        labels: [
+            'Red',
+            'Blue',
+            'Yellow'
+        ],
+        datasets: [{
+            label: 'My First Dataset',
+            data: [300, 50, 100],
+            backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)'
+            ],
+            hoverOffset: 4
+        }]
+    };
+    const config = {
+        type: 'doughnut',
+        data: data,
+    };
+    let canvas = document.createElement('canvas');
+    let container = element.getElementsByTagName('div')[1];
+    container.appendChild(canvas);
+    let chart = new Chart(canvas, config);
 }
 
 function getEnrollemntData() {
