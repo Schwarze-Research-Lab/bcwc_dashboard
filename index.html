@@ -93,16 +93,57 @@
 
   <!-- All page content -->
   <div class="p-2 container mx-auto">
+    <div id="content" class="grid grid-cols-1 xl:grid-cols-2 gap-4">
 
-    <!-- Card template -->
-    <div id="content" class="grid grid-cols-1 xl:grid-cols-2 gap-4 place-items-center">
-      <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg">
+      <!-- Card template -->
+      <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg" data-hash="dash" id="exampleCard">
         <div>
-          <h2 class="text-gray-800 text-3xl font-semibold text-center"></h2>
+          <h2 class="text-gray-800 text-3xl font-semibold">Example</h2>
+          <p class="mt-2 text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed efficitur purus id
+            augue vehicula, dapibus luctus nulla sodales. Proin suscipit elit id nibh vehicula elementum. Etiam faucibus
+            tortor eget fringilla dignissim. Mauris id interdum tortor. Sed turpis ipsum, ullamcorper sit amet lorem
+            nec, convallis tempor massa. Cras vestibulum euismod lacus quis porttitor. Proin non pharetra massa, euismod
+            euismod ligula. Aenean elementum urna in nisi ullamcorper facilisis. Suspendisse molestie enim vitae purus
+            auctor auctor sed a nibh. Phasellus efficitur, urna vitae varius dapibus, eros neque finibus nisl, vitae
+            tincidunt massa odio nec tellus. Mauris et interdum lectus. Pellentesque placerat aliquam velit. Phasellus
+            ornare turpis ac eros sollicitudin, nec efficitur odio sodales.
+          </p>
+          <div></div>
+        </div>
+      </div>
+
+      <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg" data-hash="dash" id="enrollmentSummary">
+        <div class="">
+          <h2 class="text-gray-800 text-3xl font-semibold">Enrollment</h2>
+          <p class="mt-2 text-gray-600"> </p>
+          <div class="inline-grid grid-cols-2 gap-4">
+            <div>
+              <canvas></canvas>
+            </div>
+            <div class="bg-gray-100 rounded-md font-semibold leading-10 p-6">
+              <h4 class="text-xl">Study Summary</h4>
+              <table class="min-w-full"></table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg col-span-2" data-hash="dash" id="siteEnrollmentTable">
+        <div class="">
+          <h2 class="text-gray-800 text-3xl font-semibold">Site Enrollment Table</h2>
           <p class="mt-2 text-gray-600"> </p>
           <div></div>
         </div>
       </div>
+
+      <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg col-span-2" data-hash="dash" id="siteEnrollmentTable">
+        <div class="">
+          <h2 class="text-gray-800 text-3xl font-semibold">Time Series Data</h2>
+          <p class="mt-2 text-gray-600"> </p>
+          <div></div>
+        </div>
+      </div>
+
     </div>
 
   </div>

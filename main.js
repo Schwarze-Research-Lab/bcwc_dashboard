@@ -1,6 +1,7 @@
 import './style.css';
 import testCache from './testCache.json';
 import Chart from 'chart.js/auto'
+import * as d3 from 'd3-scale-chromatic'
 
 let redcap = [];
 let content = document.getElementById("content");
@@ -25,11 +26,11 @@ function init() {
             .then(response => response.json())
             .then(data => {
                 redcap = data;
-                buildCards();
+                buildDashboard();
             });
     } else {
         redcap = testCache;
-        buildCards();
+        buildDashboard();
     }
 
     // Setup mobile button
@@ -61,71 +62,50 @@ function init() {
     });
 };
 
-function buildCards() {
+function buildDashboard() {
 
-    const config = [
-        {
-            title: "Example",
-            text: " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed efficitur purus id augue vehicula, dapibus luctus nulla sodales. Proin suscipit elit id nibh vehicula elementum. Etiam faucibus tortor eget fringilla dignissim. Mauris id interdum tortor. Sed turpis ipsum, ullamcorper sit amet lorem nec, convallis tempor massa. Cras vestibulum euismod lacus quis porttitor. Proin non pharetra massa, euismod euismod ligula. Aenean elementum urna in nisi ullamcorper facilisis. Suspendisse molestie enim vitae purus auctor auctor sed a nibh. Phasellus efficitur, urna vitae varius dapibus, eros neque finibus nisl, vitae tincidunt massa odio nec tellus. Mauris et interdum lectus. Pellentesque placerat aliquam velit. Phasellus ornare turpis ac eros sollicitudin, nec efficitur odio sodales. ",
-            page: "dash"
-        },
-        {
-            title: "Example 2",
-            text: " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed efficitur purus id augue vehicula, dapibus luctus nulla sodales. Proin suscipit elit id nibh vehicula elementum. Etiam faucibus tortor eget fringilla dignissim. Mauris id interdum tortor. Sed turpis ipsum, ullamcorper sit amet lorem nec, convallis tempor massa. Cras vestibulum euismod lacus quis porttitor. Proin non pharetra massa, euismod euismod ligula. Aenean elementum urna in nisi ullamcorper facilisis. Suspendisse molestie enim vitae purus auctor auctor sed a nibh. Phasellus efficitur, urna vitae varius dapibus, eros neque finibus nisl, vitae tincidunt massa odio nec tellus. Mauris et interdum lectus. Pellentesque placerat aliquam velit. Phasellus ornare turpis ac eros sollicitudin, nec efficitur odio sodales. ",
-            page: "one"
-        },
-        {
-            title: "Enrollment",
-            text: "",
-            page: "dash",
-            fn: enrollment
-        }
-    ];
+    // Page hashes and other static content are defined in HTML
+    enrollment(document.getElementById('enrollmentSummary'));
 
-    config.forEach(setting => {
-        content.appendChild(content.children[0].cloneNode(true));
-        content.children[content.children.length - 1]
-        let newest = content.children[content.children.length - 1];
-        if (setting.title)
-            newest.querySelector('h2').textContent = setting.title;
-        if (setting.text)
-            newest.querySelector('p').textContent = setting.text;
-        if (setting.page)
-            newest.setAttribute("data-hash", setting.page);
-        if (setting.fn)
-            setting.fn(newest);
-    });
-
-    // Delete template
-    content.children[0].remove();
 };
 
 function enrollment(element) {
     let enro = getEnrollemntData();
-    const data = {
-        labels: [
-            'Red',
-            'Blue',
-            'Yellow'
-        ],
-        datasets: [{
-            label: 'My First Dataset',
-            data: [300, 50, 100],
-            backgroundColor: [
-                'rgb(255, 99, 132)',
-                'rgb(54, 162, 235)',
-                'rgb(255, 205, 86)'
-            ],
-            hoverOffset: 4
-        }]
+    console.log(enro);
+
+    // Build Summary Table
+    let table = element.getElementsByTagName('table')[0];
+    insert2colRow(table, "Screened", enro.screened);
+    insert2colRow(table, "Elligible", enro.elligible);
+    insert2colRow(table, "Enrolled", enro.enrolled);
+    insert2colRow(table, "Enrolled <sm>(30days)<sm>", enro.last_30_enrolled);
+    insert2colRow(table, "Study Age", Math.round(enro.months_study_active, 1) + "<sm>months<sm>");
+
+    // Default Color Options
+    const colorScale = d3.interpolateRainbow;
+    const colorRangeInfo = {
+        colorStart: 0,
+        colorEnd: 1,
+        useEndAsStart: false,
     };
+
+    // Generate the chart
+    const labels = Object.keys(enro.site).map(x => site_map[x]);
+    const colors = interpolateColors(labels.length, colorScale, colorRangeInfo);
     const config = {
         type: 'doughnut',
-        data: data,
+        data: {
+            labels: labels,
+            datasets: [{
+                data: Object.entries(enro.site).map(x => x[1].enrolled),
+                backgroundColor: colors,
+                hoverOffset: 4
+            }]
+        },
     };
-    let canvas = document.createElement('canvas');
-    let container = element.getElementsByTagName('div')[1];
-    container.appendChild(canvas);
+
+    // Paint to screen
+    let canvas = element.getElementsByTagName('canvas')[0];
     let chart = new Chart(canvas, config);
 }
 
@@ -133,54 +113,78 @@ function getEnrollemntData() {
 
     const DAYS_30 = (30 * 24 * 60 * 60 * 1000);
     const MONTH_1 = (30.4 * 24 * 60 * 60 * 1000);
+    const WEEK_1 = (7 * 24 * 60 * 60 * 1000);
 
     let o = {
-        total_enrolled: 0,
-        total_elligible: 0,
+        time_series: {},
+        screened: Object.keys(redcap).length,
+        enrolled: 0,
+        elligible: 0,
         last_30_enrolled: 0,
         month_enrolled: {},
-        site_month_enrolled: {},
-        site_most_recent_enrollment: {},
-        site_enrollment: {},
+        site: {
+            // Site
+            // - most_recent_enrollment
+            // - screened
+            // - enrolled
+            // - weeks_active
+            // - months_enrolled
+            // - date_of_first_screen
+        },
         date_of_first_screen: "3000-01-01"
     }
 
     for (const id in redcap) {
 
         const data = redcap[id];
+        const month = data.screen_datetime.split('-').slice(0, 2).join('-');
+        const date = data.screen_datetime.split(' ')[0];
 
+        // Time series data Init to 0
+        !(date in o.time_series) && (o.time_series[date] = {});
+        !(o.time_series[date][data.screen_site]) && (o.time_series[date][data.screen_site] = {});
+        !(o.time_series[date][data.screen_site].screened) && (o.time_series[date][data.screen_site].screened = 0);
+        !(o.time_series[date][data.screen_site].enrolled > -1) && (o.time_series[date][data.screen_site].enrolled = 0);
+        !(o.time_series[date][data.screen_site].elligible > -1) && (o.time_series[date][data.screen_site].elligible = 0);
+        o.time_series[date][data.screen_site]['screened'] += 1
+
+        // Site indexed data
+        !(o.site[data.screen_site]) && (o.site[data.screen_site] = {});
+        !(o.site[data.screen_site].screened) && (o.site[data.screen_site].screened = 0);
+        !(o.site[data.screen_site].enrolled) && (o.site[data.screen_site].enrolled = 0);
+        !(o.site[data.screen_site].months_enrolled) && (o.site[data.screen_site].months_enrolled = {});
+        !(o.site[data.screen_site].date_of_first_screen) && (o.site[data.screen_site].date_of_first_screen = "3000-01-01");
+        o.site[data.screen_site].screened += 1;
+
+        if (data.screen_datetime < o.site[data.screen_site].date_of_first_screen) {
+            o.site[data.screen_site].date_of_first_screen = data.screen_datetime;
+        }
+
+        // Enrolled into sutdy
         if (data.rescreen_me == "1") {
-            o.total_enrolled += 1;
+            o.enrolled += 1;
+            o.time_series[date][data.screen_site]['enrolled'] += 1;
 
             const last30Days = ((new Date()).getTime() - (new Date(data.screen_datetime)).getTime()) < DAYS_30;
             if (last30Days) {
                 o.last_30_enrolled += 1;
             }
 
-            const month = data.screen_datetime.split('-').slice(0, 2).join('-');
-            if (!o.month_enrolled[month]) {
-                o.month_enrolled[month] = 0;
-            }
+            o.site[data.screen_site].enrolled += 1;
+            !(o.month_enrolled[month]) && (o.month_enrolled[month] = 0);
             o.month_enrolled[month] += 1;
+            !(o.site[data.screen_site].months_enrolled[month]) && (o.site[data.screen_site].months_enrolled[month] = 0);
+            o.site[data.screen_site].months_enrolled[month] += 1;
 
-            if (!o.site_enrollment[data.screen_site]) {
-                o.site_enrollment[data.screen_site] = 0;
-                o.site_month_enrolled[data.screen_site] = {};
-            }
-            o.site_enrollment[data.screen_site] += 1;
-
-            if (!o.site_month_enrolled[data.screen_site][month]) {
-                o.site_month_enrolled[data.screen_site][month] = 0;
-            }
-            o.site_month_enrolled[data.screen_site][month] += 1;
-
-            if (data.screen_datetime > (o.site_most_recent_enrollment[data.screen_site] || "")) {
-                o.site_most_recent_enrollment[data.screen_site] = data.screen_datetime;
+            if (data.screen_datetime > (o.site[data.screen_site].most_recent_enrollment || "")) {
+                o.site[data.screen_site].most_recent_enrollment = data.screen_datetime;
             }
         }
 
+        // Last minute stuff
         if (["1", "2", "3"].includes(data.decision_final)) {
-            o.total_elligible += 1;
+            o.elligible += 1;
+            o.time_series[date][data.screen_site]['elligible'] += 1;
         }
 
         if (data.screen_datetime < o.date_of_first_screen) {
@@ -188,6 +192,41 @@ function getEnrollemntData() {
         }
     }
 
-    o.months_study_active = ((new Date()).getTime() - (new Date(o.date_of_first_screen)).getTime()) / MONTH_1;
+    // Time ellapsed from start of study
+    const now = (new Date()).getTime();
+    o.months_study_active = (now - (new Date(o.date_of_first_screen)).getTime()) / MONTH_1;
+    for (const studySite in o.site) {
+        o.site[studySite].weeks_active = (now - (new Date(o.date_of_first_screen)).getTime()) / WEEK_1;
+    }
     return o;
+}
+
+function calculatePoint(i, intervalSize, colorRangeInfo) {
+    var { colorStart, colorEnd, useEndAsStart } = colorRangeInfo;
+    return (useEndAsStart
+        ? (colorEnd - (i * intervalSize))
+        : (colorStart + (i * intervalSize)));
+}
+
+function interpolateColors(dataLength, colorScale, colorRangeInfo) {
+    var { colorStart, colorEnd } = colorRangeInfo;
+    var colorRange = colorEnd - colorStart;
+    var intervalSize = colorRange / dataLength;
+    var i, colorPoint;
+    var colorArray = [];
+
+    for (i = 0; i < dataLength; i++) {
+        colorPoint = calculatePoint(i, intervalSize, colorRangeInfo);
+        colorArray.push(colorScale(colorPoint));
+    }
+
+    return colorArray;
+}
+
+function insert2colRow(table, left, right) {
+    let row = table.insertRow();
+    let cell1 = row.insertCell(0);
+    let cell2 = row.insertCell(1);
+    cell1.innerHTML = left;
+    cell2.innerHTML = right;
 }
