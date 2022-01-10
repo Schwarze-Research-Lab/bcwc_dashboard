@@ -97,8 +97,8 @@
 
       <!-- Card template -->
       <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg" data-hash="dash" id="exampleCard">
-        <div>
-          <h2 class="text-gray-800 text-3xl font-semibold">Example</h2>
+        <div class="">
+          <h2 class="text-gray-800 text-3xl font-semibold">Enrollment Dashboard</h2>
           <p class="mt-2 text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed efficitur purus id
             augue vehicula, dapibus luctus nulla sodales. Proin suscipit elit id nibh vehicula elementum. Etiam faucibus
             tortor eget fringilla dignissim. Mauris id interdum tortor. Sed turpis ipsum, ullamcorper sit amet lorem
@@ -114,33 +114,74 @@
 
       <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg" data-hash="dash" id="enrollmentSummary">
         <div class="">
-          <h2 class="text-gray-800 text-3xl font-semibold">Enrollment</h2>
+          <h2 class="text-gray-800 text-3xl font-semibold">Summary</h2>
           <p class="mt-2 text-gray-600"> </p>
           <div class="inline-grid grid-cols-2 gap-4">
+            <span>
+              <canvas></canvas>
+            </span>
+            <span class="bg-gray-100 rounded-md font-semibold leading-10 p-6">
+              <h4 class="text-xl">Study Summary</h4>
+              <table class="min-w-full"></table>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg xl:col-span-2" data-hash="dash" id="siteEnrollmentTable">
+        <div class="w-screen">
+
+          <!-- Date Picker -->
+          <div class="flex items-center justify-end" id="datepicker">
+            <div class="flex items-center">
+              <div class="relative w-48">
+                <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                  <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                      d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <input name="start" type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
+                  class="datepicker" placeholder="Select a start date">
+              </div>
+              <span class="mx-4 text-gray-500">to</span>
+              <div class="relative w-48">
+                <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                  <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                      d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <input name="end" type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
+                  class="datepicker" placeholder="Select an end date">
+              </div>
+            </div>
+          </div>
+
+          <h2 class="text-gray-800 text-3xl"></h2>
+          <p class="mt-2 text-gray-600"> </p>
+          <div class="inline-grid grid-cols-1 gap-2 w-full">
             <div>
               <canvas></canvas>
             </div>
-            <div class="bg-gray-100 rounded-md font-semibold leading-10 p-6">
-              <h4 class="text-xl">Study Summary</h4>
-              <table class="min-w-full"></table>
+            <div class="grid bg-gray-100 rounded-md leading-10 p-6 w-100">
             </div>
           </div>
         </div>
       </div>
 
-      <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg col-span-2" data-hash="dash" id="siteEnrollmentTable">
+      <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg xl:col-span-2" data-hash="dash"
+        id="timeSeriesEnrollment">
         <div class="">
-          <h2 class="text-gray-800 text-3xl font-semibold">Site Enrollment Table</h2>
+          <h2 class="text-gray-800 text-3xl font-semibold">Enrollment Over Time</h2>
           <p class="mt-2 text-gray-600"> </p>
-          <div></div>
-        </div>
-      </div>
-
-      <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg col-span-2" data-hash="dash" id="siteEnrollmentTable">
-        <div class="">
-          <h2 class="text-gray-800 text-3xl font-semibold">Time Series Data</h2>
-          <p class="mt-2 text-gray-600"> </p>
-          <div></div>
+          <div>
+            <canvas></canvas>
+          </div>
         </div>
       </div>
 
