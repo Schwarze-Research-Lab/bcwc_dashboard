@@ -4,6 +4,10 @@ import Chart from 'chart.js/auto'
 import * as d3 from 'd3-scale-chromatic'
 
 let redcap = [];
+let rangeDates = {
+    start: "",
+    end: "",
+}
 const site_map = {
     94: 'C',
     95: 'J',
@@ -70,6 +74,16 @@ function buildDashboard() {
     let data = getEnrollemntData();
     console.log(data);
     enrollment(document.getElementById('enrollmentSummary'), data);
+
+    setInterval(() => {
+        let start = document.getElementById('startDate').value;
+        let end = document.getElementById('endDate').value;
+        if (start != rangeDates.start || end != rangeDates.end) {
+            siteEnrollmentTable(document.getElementById('siteEnrollmentTable'), data);
+            rangeDates.start = start;
+            rangeDates.end = end;
+        }
+    }, 500);
     siteEnrollmentTable(document.getElementById('siteEnrollmentTable'), data);
     timeSeriesEnrollment(document.getElementById('timeSeriesEnrollment'), data);
 
@@ -119,6 +133,8 @@ function siteEnrollmentTable(element, data) {
     let cell;
     let cssTable = element.getElementsByClassName('grid')[0];
     cssTable.style.gridTemplateColumns = `repeat(${Object.values(site_map).length + 2}, minmax(0, 1fr))`;
+    let start = document.getElementById('startDate').value || '2000-01-01';
+    let end = document.getElementById('startDate').value || '3000-01-01';
 
     // Remove anything that was previously added
     var target = cssTable.getElementsByTagName("div"), index;
@@ -139,24 +155,31 @@ function siteEnrollmentTable(element, data) {
     cell.innerHTML = `<b>Total</b>`;
     cssTable.appendChild(cell);
 
+    // Populate table
     ["Screened", "Elligible", "Enrolled"].forEach(title => {
         cell = document.createElement('div');
         cell.innerHTML = `<b>${title}</b>`;
         cssTable.appendChild(cell);
-        let total = 0;
+        let rowTotal = 0;
         Object.entries(site_map).forEach(entry => {
             let [siteCode, siteText] = entry;
             cell = document.createElement('div');
             cell.innerHTML = `<b>0</b>`;
-            cssTable.appendChild(cell);
             if (data.site[siteCode]) {
-                let tmp = data.site[siteCode][title.toLowerCase()];
+                let tmp = 0;
+                Object.entries(data.time_series).forEach(timeEntry => {
+                    let [date, siteData] = timeEntry;
+                    if (date >= start && date <= end && siteData[siteCode]) {
+                        tmp += siteData[siteCode][title.toLowerCase()];
+                    }
+                });
                 cell.innerHTML = `<b>${tmp || 0}</b>`;
-                total += tmp || 0;
+                rowTotal += tmp || 0;
             }
+            cssTable.appendChild(cell);
         });
         cell = document.createElement('div');
-        cell.innerHTML = `<b>${total}</b>`;
+        cell.innerHTML = `<b>${rowTotal}</b>`;
         cssTable.appendChild(cell);
     });
 
