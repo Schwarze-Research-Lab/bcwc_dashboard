@@ -8,6 +8,7 @@ let rangeDates = {
     start: "",
     end: "",
 }
+const study_statuses = ["Screened", "Elligible", "Enrolled"];
 const site_map = {
     94: 'C',
     95: 'J',
@@ -73,23 +74,25 @@ function buildDashboard() {
 
     let data = getEnrollemntData();
     console.log(data);
-    enrollment(document.getElementById('enrollmentSummary'), data);
+    buildSummary(document.getElementById('enrollmentSummary'), data);
 
     setInterval(() => {
         let start = document.getElementById('startDate').value;
         let end = document.getElementById('endDate').value;
         if (start != rangeDates.start || end != rangeDates.end) {
-            siteEnrollmentTable(document.getElementById('siteEnrollmentTable'), data);
+            buildTable(document.getElementById('siteEnrollmentTable'), data);
+            buildBarChart(document.getElementById('siteEnrollmentTable'), data);
             rangeDates.start = start;
             rangeDates.end = end;
         }
     }, 500);
-    siteEnrollmentTable(document.getElementById('siteEnrollmentTable'), data);
+    buildTable(document.getElementById('siteEnrollmentTable'), data);
+    buildBarChart(document.getElementById('siteEnrollmentTable'), data);
     timeSeriesEnrollment(document.getElementById('timeSeriesEnrollment'), data);
     document.getElementById('content').parentElement.classList.remove('hidden');
 };
 
-function enrollment(element, data) {
+function buildSummary(element, data) {
 
     // Build Summary Table
     const table = element.getElementsByTagName('table')[0];
@@ -127,7 +130,7 @@ function enrollment(element, data) {
     new Chart(canvas, config);
 }
 
-function siteEnrollmentTable(element, data) {
+function buildTable(element, data) {
 
     // Set up
     let cell;
@@ -156,7 +159,7 @@ function siteEnrollmentTable(element, data) {
     cssTable.appendChild(cell);
 
     // Populate table
-    ["Screened", "Elligible", "Enrolled"].forEach(title => {
+    study_statuses.forEach(title => {
         cell = document.createElement('div');
         cell.innerHTML = `<b>${title}</b>`;
         cssTable.appendChild(cell);
@@ -182,6 +185,64 @@ function siteEnrollmentTable(element, data) {
         cell.innerHTML = `<b>${rowTotal}</b>`;
         cssTable.appendChild(cell);
     });
+
+}
+
+function buildBarChart(element, data) {
+
+    let start = document.getElementById('startDate').value || '2000-01-01';
+    let end = document.getElementById('startDate').value || '3000-01-01';
+
+    // Generate the chart
+    const labels = Object.values(site_map);
+    const colors = ['#FF8B00', '#1668BD', '#349C55'];
+    let dataSet = [];
+
+    // Loop for each 
+    study_statuses.forEach((title, index) => {
+
+        let innerData = [];
+        Object.entries(site_map).forEach(entry => {
+            let [code, name] = entry;
+            let count = 0;
+            Object.entries(data.time_series).forEach(timeEntry => {
+                let [date, siteData] = timeEntry;
+                if (date >= start && date <= end && siteData[code]) {
+                    count += siteData[code][title.toLowerCase()];
+                }
+            });
+            innerData.push(count);
+        });
+
+        dataSet.push({
+            data: innerData,
+            backgroundColor: colors[index],
+            label: title
+        });
+
+    });
+
+    const config = {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: dataSet
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: { stacked: true },
+                y: { stacked: true }
+            }
+        }
+    };
+
+    // Paint to screen
+    const container = element.getElementsByTagName('canvas')[0].parentElement;
+    element.getElementsByTagName('canvas')[0].remove();
+    const canvas = document.createElement('canvas');
+    container.appendChild(canvas)
+    new Chart(canvas, config);
 
 }
 
