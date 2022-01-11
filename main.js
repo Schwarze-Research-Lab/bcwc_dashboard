@@ -86,7 +86,7 @@ function buildDashboard() {
     }, 500);
     siteEnrollmentTable(document.getElementById('siteEnrollmentTable'), data);
     timeSeriesEnrollment(document.getElementById('timeSeriesEnrollment'), data);
-
+    document.getElementById('content').parentElement.classList.remove('hidden');
 };
 
 function enrollment(element, data) {
