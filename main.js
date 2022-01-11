@@ -217,6 +217,12 @@ function getEnrollemntData() {
     for (const id in redcap) {
 
         const data = redcap[id];
+
+        if (!data.screen_datetime) {
+            console.log('Skipped, no date listed');
+            continue;
+        }
+
         const month = data.screen_datetime.split('-').slice(0, 2).join('-');
         const date = data.screen_datetime.split(' ')[0];
         const screenSite = data.screen_site || 999;
