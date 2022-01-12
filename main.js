@@ -91,6 +91,7 @@ function buildDashboard() {
     buildBarChart(document.getElementById('siteEnrollmentTable'), data);
     timeSeriesEnrollment(document.getElementById('timeSeriesEnrollment'), data);
     document.getElementById('content').parentElement.classList.remove('hidden');
+    document.getElementById('loadingScreen').classList.add('hidden');
 };
 
 function buildSummary(element, data) {
@@ -225,7 +226,10 @@ function buildBarChart(element, data) {
             let count = 0;
             Object.entries(data.time_series).forEach(timeEntry => {
                 let [date, siteData] = timeEntry;
-                if (date >= start && date <= end && siteData[code]) {
+                if (siteData[code]) {
+                    console.log(siteData[code][title.toLowerCase()]);
+                }
+                if (siteData[code] && date >= start && date <= end) {
                     count += siteData[code][title.toLowerCase()];
                 }
             });
