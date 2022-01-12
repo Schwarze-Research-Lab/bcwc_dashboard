@@ -1,7 +1,8 @@
 import './style.css';
 import testCache from './testCache.json';
-import Chart from 'chart.js/auto'
-import * as d3 from 'd3-scale-chromatic'
+import Chart from 'chart.js/auto';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import * as d3 from 'd3-scale-chromatic';
 
 let redcap = [];
 let rangeDates = {
@@ -106,7 +107,7 @@ function buildSummary(element, data) {
     const colorScale = d3.interpolateRainbow;
     const colorRangeInfo = {
         colorStart: 0,
-        colorEnd: 0.25,
+        colorEnd: 1,
         useEndAsStart: false,
     };
 
@@ -123,6 +124,23 @@ function buildSummary(element, data) {
                 hoverOffset: 4
             }]
         },
+        plugins: [ChartDataLabels],
+        options: {
+            plugins: {
+                datalabels: {
+                    formatter: (value, ctx) => {
+                        let sum = 0;
+                        let dataArr = ctx.chart.data.datasets[0].data;
+                        dataArr.map(data => {
+                            sum += data;
+                        });
+                        let p = (value * 100 / sum).toFixed(0);
+                        return p < 5 ? "" : p + "%";
+                    },
+                    color: '#ffffff',
+                },
+            }
+        }
     };
 
     // Paint to screen
