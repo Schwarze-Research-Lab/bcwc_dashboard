@@ -156,7 +156,7 @@ function buildTable(element, data) {
     let cssTable = element.getElementsByClassName('grid')[0];
     cssTable.style.gridTemplateColumns = `repeat(${Object.values(site_map).length + 2}, minmax(0, 1fr))`;
     let start = document.getElementById('startDate').value || '2000-01-01';
-    let end = document.getElementById('startDate').value || '3000-01-01';
+    let end = document.getElementById('endDate').value || '3000-01-01';
 
     // Remove anything that was previously added
     var target = cssTable.getElementsByTagName("div"), index;
@@ -209,27 +209,29 @@ function buildTable(element, data) {
 
 function buildBarChart(element, data) {
 
-    let start = document.getElementById('startDate').value || '2000-01-01';
-    let end = document.getElementById('startDate').value || '3000-01-01';
+    const start = document.getElementById('startDate').value || '2000-01-01';
+    const end = document.getElementById('endDate').value || '3000-01-01';
 
     // Generate the chart
     const labels = Object.values(site_map);
     const colors = ['#FF8B00', '#1668BD', '#349C55'];
     let dataSet = [];
 
-    // Loop for each 
+    // For the 3 status types
     study_statuses.forEach((title, index) => {
 
         let innerData = [];
+
+        // For each site
         Object.entries(site_map).forEach(entry => {
+
             let [code, name] = entry;
             let count = 0;
+
+            // For each date
             Object.entries(data.time_series).forEach(timeEntry => {
                 let [date, siteData] = timeEntry;
-                if (siteData[code]) {
-                    console.log(siteData[code][title.toLowerCase()]);
-                }
-                if (siteData[code] && date >= start && date <= end) {
+                if (siteData[code] && (date >= start) && (date <= end)) {
                     count += siteData[code][title.toLowerCase()];
                 }
             });
