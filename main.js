@@ -11,15 +11,42 @@ let rangeDates = {
 }
 const study_statuses = ["Screened", "Elligible", "Enrolled"];
 const site_map = {
-    94: 'C',
-    95: 'J',
-    96: 'M',
-    97: 'SI',
-    98: 'P',
-    99: 'WA',
-    100: 'V',
-    101: 'WV',
-    999: 'Unknown',
+    94: {
+        'short': 'C',
+        'display': 'Col'
+    },
+    95: {
+        'short': 'J',
+        'display': 'JHU'
+    },
+    96: {
+        'short': 'M',
+        'display': 'MCW'
+    },
+    97: {
+        'short': 'SI',
+        'display': 'Si'
+    },
+    98: {
+        'short': 'P',
+        'display': 'Pitt'
+    },
+    99: {
+        'short': 'WA',
+        'display': 'WA'
+    },
+    100: {
+        'short': 'V',
+        'display': 'Vt'
+    },
+    101: {
+        'short': 'WV',
+        'display': 'WV'
+    },
+    999: {
+        'short': 'Unknown',
+        'display': 'Unknown'
+    },
 };
 init();
 
@@ -113,7 +140,7 @@ function buildSummary(element, data) {
     };
 
     // Generate the chart
-    const labels = Object.keys(data.site).map(x => site_map[x]);
+    const labels = Object.keys(data.site).map(x => site_map[x].display);
     const colors = interpolateColors(labels.length, colorScale, colorRangeInfo);
     const config = {
         type: 'doughnut',
@@ -154,7 +181,7 @@ function buildTable(element, data) {
     // Set up
     let cell;
     let cssTable = element.getElementsByClassName('grid')[0];
-    cssTable.style.gridTemplateColumns = `repeat(${Object.values(site_map).length + 2}, minmax(0, 1fr))`;
+    cssTable.style.gridTemplateColumns = `repeat(${Object.keys(site_map).length + 2}, minmax(0, 1fr))`;
     let start = document.getElementById('startDate').value || '2000-01-01';
     let end = document.getElementById('endDate').value || '3000-01-01';
 
@@ -168,7 +195,8 @@ function buildTable(element, data) {
     cell = document.createElement('div');
     cell.innerHTML = `<b></b>`;
     cssTable.appendChild(cell);
-    Object.values(site_map).forEach(siteText => {
+    Object.values(site_map).forEach(siteInfo => {
+        let siteText = siteInfo.display;
         cell = document.createElement('div');
         cell.innerHTML = `<b>${siteText}</b>`;
         cssTable.appendChild(cell);
@@ -184,7 +212,7 @@ function buildTable(element, data) {
         cssTable.appendChild(cell);
         let rowTotal = 0;
         Object.entries(site_map).forEach(entry => {
-            let [siteCode, siteText] = entry;
+            let [siteCode, siteInfo] = entry;
             cell = document.createElement('div');
             cell.innerHTML = `<b>0</b>`;
             if (data.site[siteCode]) {
@@ -213,7 +241,7 @@ function buildBarChart(element, data) {
     const end = document.getElementById('endDate').value || '3000-01-01';
 
     // Generate the chart
-    const labels = Object.values(site_map);
+    const labels = Object.keys(data.site).map(x => site_map[x].display);
     const colors = ['#FF8B00', '#1668BD', '#349C55'];
     let dataSet = [];
 
@@ -225,7 +253,7 @@ function buildBarChart(element, data) {
         // For each site
         Object.entries(site_map).forEach(entry => {
 
-            let [code, name] = entry;
+            let [code, siteInfo] = entry;
             let count = 0;
 
             // For each date
