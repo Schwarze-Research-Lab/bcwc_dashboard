@@ -9,6 +9,7 @@ let rangeDates = {
     start: "",
     end: "",
 }
+const mdy_date = { year: 'numeric', month: '2-digit', day: '2-digit' };
 const study_statuses = ["Screened", "Elligible", "Enrolled"];
 const site_map = {
     94: {
@@ -44,7 +45,7 @@ const site_map = {
         'display': 'WV'
     },
     999: {
-        'short': 'Unknown',
+        'short': 'UNK',
         'display': 'Unknown'
     },
 };
@@ -76,6 +77,7 @@ function init() {
     const activeClass = ["bg-gray-900", "text-white"];
     const defaultClass = ["text-gray-300", "hover:bg-gray-700", "hover:text-white"];
 
+    // Setup button clicks on nav, not used currently
     allButtons.forEach(btn => {
         btn.onclick = el => {
             // Style all butons to normal
@@ -96,14 +98,15 @@ function init() {
     });
 };
 
+// Main Build function for the page
 function buildDashboard() {
 
     // Page hashes and other static content are defined in HTML
 
     let data = getEnrollemntData();
-    console.log(data);
     buildSummary(document.getElementById('enrollmentSummary'), data);
 
+    // Check on date changes 
     setInterval(() => {
         let start = document.getElementById('startDate').value;
         let end = document.getElementById('endDate').value;
@@ -114,6 +117,8 @@ function buildDashboard() {
             rangeDates.end = end;
         }
     }, 500);
+
+    // Initial build out
     buildTable(document.getElementById('siteEnrollmentTable'), data);
     buildBarChart(document.getElementById('siteEnrollmentTable'), data);
     timeSeriesEnrollment(document.getElementById('timeSeriesEnrollment'), data);
@@ -121,6 +126,7 @@ function buildDashboard() {
     document.getElementById('loadingScreen').classList.add('hidden');
 };
 
+// Build the top most summary with site-wide statistic and pie chart
 function buildSummary(element, data) {
 
     // Build Summary Table
@@ -176,12 +182,14 @@ function buildSummary(element, data) {
     new Chart(canvas, config);
 }
 
+// Build the table that is time range dependent
 function buildTable(element, data) {
 
     // Set up
     let cell;
     let cssTable = element.getElementsByClassName('grid')[0];
-    cssTable.style.gridTemplateColumns = `repeat(${Object.keys(site_map).length + 2}, minmax(0, 1fr))`;
+    const offset = window.location.hostname == 'localhost' ? 2 : 1;
+    cssTable.style.gridTemplateColumns = `repeat(${Object.keys(site_map).length + offset}, minmax(0, 1fr))`;
     let start = document.getElementById('startDate').value || '2000-01-01';
     let end = document.getElementById('endDate').value || '3000-01-01';
 
@@ -195,7 +203,11 @@ function buildTable(element, data) {
     cell = document.createElement('div');
     cell.innerHTML = `<b></b>`;
     cssTable.appendChild(cell);
+    const labels = Object.keys(data.site).map(x => site_map[x].display);
     Object.values(site_map).forEach(siteInfo => {
+        if (siteInfo.short == "UNK" && window.location.hostname != "localhost") {
+            return;
+        }
         let siteText = siteInfo.display;
         cell = document.createElement('div');
         cell.innerHTML = `<b>${siteText}</b>`;
@@ -213,8 +225,11 @@ function buildTable(element, data) {
         let rowTotal = 0;
         Object.entries(site_map).forEach(entry => {
             let [siteCode, siteInfo] = entry;
+            if (siteCode == 999 && window.location.hostname != "localhost") {
+                return;
+            }
             cell = document.createElement('div');
-            cell.innerHTML = `<b>0</b>`;
+            cell.innerHTML = title == "Screened" ? `<b class="text-red-600">0</b>` : `<b>0</b>`;
             if (data.site[siteCode]) {
                 let tmp = 0;
                 Object.entries(data.time_series).forEach(timeEntry => {
@@ -223,7 +238,11 @@ function buildTable(element, data) {
                         tmp += siteData[siteCode][title.toLowerCase()];
                     }
                 });
-                cell.innerHTML = `<b>${tmp || 0}</b>`;
+                if (title == "Screened" && tmp <= 15) {
+                    cell.innerHTML = `<b class="text-red-600">${tmp || 0}</b>`;
+                } else {
+                    cell.innerHTML = `<b>${tmp || 0}</b>`;
+                }
                 rowTotal += tmp || 0;
             }
             cssTable.appendChild(cell);
@@ -233,8 +252,25 @@ function buildTable(element, data) {
         cssTable.appendChild(cell);
     });
 
+    // Populate another row of the table with most recent enrollment
+    cell = document.createElement('div');
+    cell.innerHTML = `<b>Recent Enroll</b>`;
+    cssTable.appendChild(cell);
+    Object.entries(site_map).forEach(entry => {
+        let [siteCode, siteInfo] = entry;
+        cell = document.createElement('div');
+        cell.innerHTML = `<b></b>`;
+        if (siteCode != 999 && data.site[siteCode] && data.site[siteCode]['most_recent_enrollment']) {
+            cell.innerHTML = `<b>${(new Date(data.site[siteCode]['most_recent_enrollment'])).toLocaleDateString("en-US", mdy_date)}</b>`;
+        }
+        cssTable.appendChild(cell);
+    });
+    cell = document.createElement('div');
+    cell.innerHTML = `<b></b>`;
+    cssTable.appendChild(cell);
 }
 
+// Build the primary bar chart that is time range dependent
 function buildBarChart(element, data) {
 
     const start = document.getElementById('startDate').value || '2000-01-01';
@@ -298,10 +334,12 @@ function buildBarChart(element, data) {
 
 }
 
-function timeSeriesEnrollment(element, data) {
 
+function timeSeriesEnrollment(element, data) {
+    // TODO
 }
 
+// Fetch and organize all data
 function getEnrollemntData() {
 
     const DAYS_30 = (30 * 24 * 60 * 60 * 1000);
