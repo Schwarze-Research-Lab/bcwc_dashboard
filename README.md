@@ -1,5 +1,23 @@
 The [site](https://bcwc.surgery.wisc.edu/) is built using a modern tailwind vite stack with vanilla js
 
+## Todo List
+
+*	Line plot to indicate trends over time
+*	Date of last decline  
+  * Not sure if we can get at this info easily, might need to make redcap project changes
+*	Enrollment by nephrologist  
+  * first_neph_seen
+*	Total screened by nephrologist 
+  * I’d like to have total number nephrologists enrolled at site on here but it’s a little more complicated in that their drop out/other status info is saved in a different redcap project leave
+*	numb nephrologist exclusions  
+  * screen_neph_exclude = 1
+*	numb eligible not approached   
+  * screen_approach_method = 3
+*	Survey completion
+  * T0 survey completion= for all on study (rescreen_me= 1), what percent have facit_t0_complete = 1 
+  * T1 survey completion= for all on study (rescreen_me= 1), what percent have pt_t1_qoc_complete = 1 
+
+
 ## Local Dev Deploy
 
 ```

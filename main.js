@@ -11,7 +11,7 @@ let rangeDates = {
     end: "",
 }
 const mdy_date = { year: 'numeric', month: '2-digit', day: '2-digit' };
-const study_statuses = ["Screened", "Elligible", "Enrolled"];
+const study_statuses = ["Screened", "Elligible", "Enrolled", "Declined"];
 const site_map = {
     94: {
         'short': 'C',
@@ -52,6 +52,7 @@ const site_map = {
 };
 init();
 
+// Main build for page elements (Nav and data load)
 function init() {
 
     // Load data from php proxy (or local test cache)
@@ -99,7 +100,7 @@ function init() {
     });
 };
 
-// Main Build function for the page
+// Main Build function for dashboard
 function buildDashboard() {
 
     // Page hashes and other static content are defined in HTML
@@ -108,12 +109,48 @@ function buildDashboard() {
     buildSummary(document.getElementById('enrollmentSummary'), data);
 
     // Setup date dropdown
+    buildDateDropdown();
+
+    // Check on date changes 
+    setInterval(() => {
+        let start = document.getElementById('startDate').value;
+        let end = document.getElementById('endDate').value;
+        if (start != rangeDates.start || end != rangeDates.end) {
+            if (rangeDates.dropDownChange) {
+                rangeDates.dropDownChange = false;
+            } else {
+                document.getElementById('datedropdown').getElementsByTagName("select")[0].value = "";
+            }
+            buildTable(document.getElementById('siteEnrollmentTable'), data);
+            buildBarChart(document.getElementById('siteEnrollmentTable'), data);
+            rangeDates.start = start;
+            rangeDates.end = end;
+        }
+    }, 500);
+
+    // Initial build out
+    buildTable(document.getElementById('siteEnrollmentTable'), data);
+    buildBarChart(document.getElementById('siteEnrollmentTable'), data);
+    timeSeriesEnrollment(document.getElementById('timeSeriesEnrollment'), data);
+    document.getElementById('datedropdown').dispatchEvent(new Event("change"));
+
+    // Make content Visible
+    document.getElementById('content').parentElement.classList.remove('hidden');
+    document.getElementById('loadingScreen').classList.add('hidden');
+};
+
+// Build out options for the date drop down and setup the onChange event
+function buildDateDropdown() {
+
     const today = (new Date()).toLocaleDateString('fr-CA');
     const dropDown = document.getElementById('datedropdown').getElementsByTagName("select")[0];
     dropDown.value = "";
+
     document.getElementById('datedropdown').addEventListener("change", () => {
+
         dropDown.classList.remove("text-gray-400");
         rangeDates.dropDownChange = true;
+
         if (dropDown.value == "") {
             dropDown.classList.add("text-gray-400");
             document.getElementById('startDate').value = "";
@@ -138,6 +175,7 @@ function buildDashboard() {
             document.getElementById('endDate').value = end;
         }
     });
+
     for (let i = 1; i <= 6; i++) {
         let option = document.createElement("option");
         option.value = "-1";
@@ -148,31 +186,7 @@ function buildDashboard() {
         dropDown.appendChild(option);
     }
 
-    // Check on date changes 
-    setInterval(() => {
-        let start = document.getElementById('startDate').value;
-        let end = document.getElementById('endDate').value;
-        if (start != rangeDates.start || end != rangeDates.end) {
-            if (rangeDates.dropDownChange) {
-                rangeDates.dropDownChange = false;
-            } else {
-                dropDown.value = "";
-            }
-            buildTable(document.getElementById('siteEnrollmentTable'), data);
-            buildBarChart(document.getElementById('siteEnrollmentTable'), data);
-            rangeDates.start = start;
-            rangeDates.end = end;
-        }
-    }, 500);
-
-    // Initial build out
-    buildTable(document.getElementById('siteEnrollmentTable'), data);
-    buildBarChart(document.getElementById('siteEnrollmentTable'), data);
-    timeSeriesEnrollment(document.getElementById('timeSeriesEnrollment'), data);
-    document.getElementById('content').parentElement.classList.remove('hidden');
-    document.getElementById('loadingScreen').classList.add('hidden');
-    document.getElementById('datedropdown').dispatchEvent(new Event("change"));
-};
+}
 
 // Build the top most summary with site-wide statistic and pie chart
 function buildSummary(element, data) {
@@ -183,6 +197,7 @@ function buildSummary(element, data) {
     insert2colRow(table, "Elligible", data.elligible);
     insert2colRow(table, "Enrolled", data.enrolled);
     insert2colRow(table, "Enrolled <sm>(30days)<sm>", data.last_30_enrolled);
+    insert2colRow(table, "Declined", data.declined);
     insert2colRow(table, "Study Age", Math.round(data.months_study_active, 1) + "<sm>months<sm>");
 
     // Default Color Options
@@ -300,22 +315,71 @@ function buildTable(element, data) {
         cssTable.appendChild(cell);
     });
 
-    // Populate another row of the table with most recent enrollment
+    // Add on the % Elligible row
     cell = document.createElement('div');
-    cell.innerHTML = `<b>Recent Enroll</b>`;
+    cell.innerHTML = `<b>% Elligible</b>`;
     cssTable.appendChild(cell);
-    Object.entries(site_map).forEach(entry => {
+    const rowSize = Object.keys(site_map).length + (window.location.hostname == 'localhost' ? 2 : 1);
+    const grid = document.getElementById("siteEnrollmentTable").getElementsByClassName("grid")[0].getElementsByTagName('div');
+    Object.entries(site_map).forEach((entry, index) => {
         let [siteCode, siteInfo] = entry;
         cell = document.createElement('div');
         cell.innerHTML = `<b></b>`;
-        if (siteCode != 999 && data.site[siteCode] && data.site[siteCode]['most_recent_enrollment']) {
-            cell.innerHTML = `<b>${(new Date(data.site[siteCode]['most_recent_enrollment'])).toLocaleDateString("en-US", mdy_date)}</b>`;
+        if (siteCode != 999 && data.site[siteCode]) {
+            cell.innerHTML = `<b>${(100 * ((grid[(rowSize * 2) + 1 + index].textContent) / (grid[rowSize + 1 + index].textContent))).toFixed(2)}%</b>`;
         }
-        cssTable.appendChild(cell);
+        if (siteInfo.short != "UNK" || window.location.hostname == "localhost") {
+            cssTable.appendChild(cell);
+        }
     });
     cell = document.createElement('div');
-    cell.innerHTML = `<b></b>`;
+    cell.innerHTML = `<b>${(100 * ((grid[(rowSize * 3) - 1].textContent) / (grid[(rowSize * 2) - 1].textContent))).toFixed(2)}%</b>`;
     cssTable.appendChild(cell);
+
+    // Populate unique rows of the table with time insensative info
+    let borderClass = ['border-t', 'border-gray-400'];
+    const staticConfig = [
+        {
+            title: "Recent Enroll",
+            varName: "most_recent_enrollment"
+        },
+        {
+            title: "Recent Decl",
+            varName: "most_recent_decline"
+        },
+        {
+            title: "Time Active",
+            varName: "weeks_active"
+        }
+    ];
+    staticConfig.forEach(rowConfig => {
+        cell = document.createElement('div');
+        cell.classList.add(...borderClass);
+        cell.innerHTML = `<b>${rowConfig.title}</b>`;
+        cssTable.appendChild(cell);
+        Object.entries(site_map).forEach(entry => {
+            let [siteCode, siteInfo] = entry;
+            cell = document.createElement('div');
+            cell.classList.add(...borderClass);
+            cell.innerHTML = `<b></b>`;
+            if (siteCode != 999 && data.site[siteCode] && data.site[siteCode][rowConfig.varName]) {
+                if (['most_recent_enrollment', ''].includes(rowConfig.varName)) {
+                    cell.innerHTML = `<b>${(new Date(data.site[siteCode]['most_recent_enrollment'])).toLocaleDateString("en-US", mdy_date)}</b>`;
+                }
+                else {
+                    cell.innerHTML = `<b>${Math.round(data.site[siteCode][rowConfig.varName])}<sm>weeks</sm></b>`;
+                }
+            }
+            if (siteInfo.short != "UNK" || window.location.hostname == "localhost") {
+                cssTable.appendChild(cell);
+            }
+        });
+        cell = document.createElement('div');
+        cell.classList.add(...borderClass);
+        cell.innerHTML = `<b></b>`;
+        cssTable.appendChild(cell);
+        borderClass = [];
+    });
 }
 
 // Build the primary bar chart that is time range dependent
@@ -326,7 +390,7 @@ function buildBarChart(element, data) {
 
     // Generate the chart
     const labels = Object.keys(data.site).map(x => site_map[x].display);
-    const colors = ['#FF8B00', '#1668BD', '#349C55'];
+    const colors = ['#FF8B00', '#1668BD', '#349C55', '#770ff0'];
     let dataSet = [];
 
     // For the 3 status types
@@ -399,11 +463,13 @@ function getEnrollemntData() {
         screened: Object.keys(redcap).length,
         enrolled: 0,
         elligible: 0,
+        declined: 0,
         last_30_enrolled: 0,
         month_enrolled: {},
         site: {
             // Site
             // - most_recent_enrollment
+            // - most_recent_decline
             // - screened
             // - enrolled
             // - weeks_active
@@ -432,6 +498,7 @@ function getEnrollemntData() {
         !(o.time_series[date][screenSite].screened) && (o.time_series[date][screenSite].screened = 0);
         !(o.time_series[date][screenSite].enrolled > -1) && (o.time_series[date][screenSite].enrolled = 0);
         !(o.time_series[date][screenSite].elligible > -1) && (o.time_series[date][screenSite].elligible = 0);
+        !(o.time_series[date][screenSite].declined > -1) && (o.time_series[date][screenSite].declined = 0);
         o.time_series[date][screenSite]['screened'] += 1
 
         // Site indexed data
@@ -465,12 +532,20 @@ function getEnrollemntData() {
             if (data.screen_datetime > (o.site[screenSite].most_recent_enrollment || "")) {
                 o.site[screenSite].most_recent_enrollment = data.screen_datetime;
             }
+
+            // if (data.screen_datetime > (o.site[screenSite].most_recent_decline || "")) {
+            //     o.site[screenSite].most_recent_decline = data.screen_datetime;
+            // }
         }
 
         // Last minute stuff
         if (["1", "2", "3"].includes(data.decision_final)) {
             o.elligible += 1;
             o.time_series[date][screenSite]['elligible'] += 1;
+            if (data.decision_final == "2") {
+                o.declined += 1;
+                o.time_series[date][screenSite]['declined'] += 1;
+            }
         }
 
         if (data.screen_datetime < o.date_of_first_screen) {
