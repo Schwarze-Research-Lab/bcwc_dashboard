@@ -26,9 +26,11 @@ npm run dev
 ```
 ## Production Deploy
 
+See `package.json` for info on what npm commands do
+
 ```
 npm run build
-scp -r dist/* bcwc@bcwc.surgery.wisc.edu:~/dashboard/
+npm run deploy
 ```
 ## Connecting to Production
 
