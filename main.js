@@ -11,7 +11,7 @@ let rangeDates = {
     end: "",
 }
 const mdy_date = { year: 'numeric', month: '2-digit', day: '2-digit' };
-const study_statuses = ["Screened", "Elligible", "Enrolled", "Declined"];
+const study_statuses = ["Screened", "Elligible", "Enrolled", "Declined", "Excluded"];
 const site_map = {
     94: {
         'short': 'C',
@@ -198,6 +198,7 @@ function buildSummary(element, data) {
     insert2colRow(table, "Enrolled", data.enrolled);
     insert2colRow(table, "Enrolled <sm>(30days)<sm>", data.last_30_enrolled);
     insert2colRow(table, "Declined", data.declined);
+    insert2colRow(table, "Excluded", data.excluded);
     insert2colRow(table, "Study Age", Math.round(data.months_study_active, 1) + "<sm>months<sm>");
 
     // Default Color Options
@@ -390,7 +391,7 @@ function buildBarChart(element, data) {
 
     // Generate the chart
     const labels = Object.keys(data.site).map(x => site_map[x].display);
-    const colors = ['#FF8B00', '#1668BD', '#349C55', '#770ff0'];
+    const colors = ['#FF8B00', '#1668BD', '#349C55', '#74226C', '#BA3B46'];
     let dataSet = [];
 
     // For the 3 status types
@@ -464,6 +465,7 @@ function getEnrollemntData() {
         enrolled: 0,
         elligible: 0,
         declined: 0,
+        excluded: 0,
         last_30_enrolled: 0,
         month_enrolled: {},
         site: {
@@ -499,6 +501,7 @@ function getEnrollemntData() {
         !(o.time_series[date][screenSite].enrolled > -1) && (o.time_series[date][screenSite].enrolled = 0);
         !(o.time_series[date][screenSite].elligible > -1) && (o.time_series[date][screenSite].elligible = 0);
         !(o.time_series[date][screenSite].declined > -1) && (o.time_series[date][screenSite].declined = 0);
+        !(o.time_series[date][screenSite].excluded > -1) && (o.time_series[date][screenSite].excluded = 0);
         o.time_series[date][screenSite]['screened'] += 1
 
         // Site indexed data
@@ -550,6 +553,11 @@ function getEnrollemntData() {
 
         if (data.screen_datetime < o.date_of_first_screen) {
             o.date_of_first_screen = data.screen_datetime;
+        }
+
+        if (data.screen_neph_exclude == "1") {
+            o.excluded += 1;
+            o.time_series[date][screenSite]['excluded'] += 1;
         }
     }
 

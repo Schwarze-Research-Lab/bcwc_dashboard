@@ -9,8 +9,6 @@ The [site](https://bcwc.surgery.wisc.edu/) is built using a modern tailwind vite
     * first_neph_seen
 *	Total screened by nephrologist 
     * I’d like to have total number nephrologists enrolled at site on here but it’s a little more complicated in that their drop out/other status info is saved in a different redcap project leave
-*	numb nephrologist exclusions  
-    * screen_neph_exclude = 1
 *	numb eligible not approached   
     * screen_approach_method = 3
 *	Survey completion
