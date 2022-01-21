@@ -6,6 +6,7 @@ import * as d3 from 'd3-scale-chromatic';
 
 let redcap = [];
 let rangeDates = {
+    dropDownChange: false,
     start: "",
     end: "",
 }
@@ -106,11 +107,57 @@ function buildDashboard() {
     let data = getEnrollemntData();
     buildSummary(document.getElementById('enrollmentSummary'), data);
 
+    // Setup date dropdown
+    const today = (new Date()).toLocaleDateString('fr-CA');
+    const dropDown = document.getElementById('datedropdown').getElementsByTagName("select")[0];
+    dropDown.value = "";
+    document.getElementById('datedropdown').addEventListener("change", () => {
+        dropDown.classList.remove("text-gray-400");
+        rangeDates.dropDownChange = true;
+        if (dropDown.value == "") {
+            dropDown.classList.add("text-gray-400");
+            document.getElementById('startDate').value = "";
+            document.getElementById('endDate').value = "";
+        } else if (dropDown.value.length == 2 && parseInt(dropDown.value) > 0) {
+            let start = new Date();
+            start.setDate(start.getDate() - parseInt(dropDown.value));
+            start = start.toLocaleDateString('fr-CA');
+            document.getElementById('startDate').value = start;
+            document.getElementById('endDate').value = today;
+        } else if (dropDown.value == "month") {
+            let start = new Date();
+            start.setDate(1);
+            start = start.toLocaleDateString('fr-CA');
+            document.getElementById('startDate').value = start;
+            document.getElementById('endDate').value = today;
+        } else {
+            const [year, month] = dropDown.value.split('-');
+            const start = (new Date(year, month - 1, 1)).toLocaleDateString('fr-CA');
+            const end = (new Date(year, month, 0)).toLocaleDateString('fr-CA');
+            document.getElementById('startDate').value = start;
+            document.getElementById('endDate').value = end;
+        }
+    });
+    for (let i = 1; i <= 6; i++) {
+        let option = document.createElement("option");
+        option.value = "-1";
+        let tmpDate = new Date();
+        tmpDate.setMonth(tmpDate.getMonth() - i);
+        option.text = tmpDate.toLocaleDateString("en-US", { year: "numeric", month: "long" }).split(' ').reverse().join(' ');
+        option.value = tmpDate.toLocaleDateString("en-US", { year: "numeric", month: "2-digit" }).split('/').reverse().join('-');
+        dropDown.appendChild(option);
+    }
+
     // Check on date changes 
     setInterval(() => {
         let start = document.getElementById('startDate').value;
         let end = document.getElementById('endDate').value;
         if (start != rangeDates.start || end != rangeDates.end) {
+            if (rangeDates.dropDownChange) {
+                rangeDates.dropDownChange = false;
+            } else {
+                dropDown.value = "";
+            }
             buildTable(document.getElementById('siteEnrollmentTable'), data);
             buildBarChart(document.getElementById('siteEnrollmentTable'), data);
             rangeDates.start = start;
@@ -124,6 +171,7 @@ function buildDashboard() {
     timeSeriesEnrollment(document.getElementById('timeSeriesEnrollment'), data);
     document.getElementById('content').parentElement.classList.remove('hidden');
     document.getElementById('loadingScreen').classList.add('hidden');
+    document.getElementById('datedropdown').dispatchEvent(new Event("change"));
 };
 
 // Build the top most summary with site-wide statistic and pie chart

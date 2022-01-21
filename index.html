@@ -138,33 +138,52 @@
       <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg xl:col-span-2" data-hash="dash" id="siteEnrollmentTable">
         <div class="w-screen">
 
-          <!-- Date Picker -->
-          <div class="flex items-center justify-end" id="datepicker">
-            <div class="flex items-center">
-              <div class="relative w-48">
-                <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                  <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
-                      d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                      clip-rule="evenodd"></path>
-                  </svg>
+          <!-- Time Range Row -->
+          <div class="flex items-center justify-end">
+
+            <div id="datedropdown" class="h-10">
+              <div class="h-full flex items-center">
+                <div class="h-full relative w-60 mr-10">
+                  <select
+                    class="h-full form-select appearance-none text-sm block w-full px-3 py-1.5 bg-gray-50 bg-clip-padding border border-solid border-gray-300 rounded-lg transition ease-in-out m-0 focus:text-gray-700 focus:outline focus:outline-3 focus:outline-blue-600"
+                    aria-label="Date Range Dropdown">
+                    <option value="">Select a date range</option>
+                    <option value="month">This Month</option>
+                    <option value="30">Last 30 Days</option>
+                    <option value="60">Last 60 Days</option>
+                    <option value="90">Last 90 Days</option>
+                  </select>
                 </div>
-                <input name="start" id="startDate" type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                  class="datepicker" placeholder="Select a start date">
               </div>
-              <span class="mx-4 text-gray-500">to</span>
-              <div class="relative w-48">
-                <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                  <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
-                      d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                      clip-rule="evenodd"></path>
-                  </svg>
+            </div>
+
+            <div id="datepicker">
+              <div class="flex items-center">
+                <div class="relative w-48">
+                  <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd"
+                        d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                        clip-rule="evenodd"></path>
+                    </svg>
+                  </div>
+                  <input name="start" id="startDate" type="text" onfocus="(this.type='date')"
+                    onblur="(this.type='text')" class="datepicker" placeholder="Select a start date">
                 </div>
-                <input name="end" id="endDate" type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                  class="datepicker" placeholder="Select an end date">
+                <span class="mx-4 text-gray-500">to</span>
+                <div class="relative w-48">
+                  <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd"
+                        d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                        clip-rule="evenodd"></path>
+                    </svg>
+                  </div>
+                  <input name="end" id="endDate" type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
+                    class="datepicker" placeholder="Select an end date">
+                </div>
               </div>
             </div>
           </div>
