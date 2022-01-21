@@ -284,6 +284,7 @@ function buildTable(element, data) {
     // Populate table
     study_statuses.forEach(title => {
         cell = document.createElement('div');
+        cell.classList.add('overflow-hidden');
         cell.innerHTML = `<b>${title}</b>`;
         cssTable.appendChild(cell);
         let rowTotal = 0;
@@ -318,6 +319,7 @@ function buildTable(element, data) {
 
     // Add on the % Elligible row
     cell = document.createElement('div');
+    cell.classList.add('overflow-hidden');
     cell.innerHTML = `<b>% Elligible</b>`;
     cssTable.appendChild(cell);
     const rowSize = Object.keys(site_map).length + (window.location.hostname == 'localhost' ? 2 : 1);
@@ -345,7 +347,7 @@ function buildTable(element, data) {
             varName: "most_recent_enrollment"
         },
         {
-            title: "Recent Decl",
+            title: "Recent Decline",
             varName: "most_recent_decline"
         },
         {
@@ -356,6 +358,7 @@ function buildTable(element, data) {
     staticConfig.forEach(rowConfig => {
         cell = document.createElement('div');
         cell.classList.add(...borderClass);
+        cell.classList.add('overflow-hidden');
         cell.innerHTML = `<b>${rowConfig.title}</b>`;
         cssTable.appendChild(cell);
         Object.entries(site_map).forEach(entry => {
