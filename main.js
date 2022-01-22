@@ -110,6 +110,12 @@ function buildDashboard() {
 
     // Setup date dropdown
     buildDateDropdown();
+    document.getElementById('datedropdown').dispatchEvent(new Event("change"));
+
+    // Initial build out
+    buildTable(document.getElementById('siteEnrollmentTable'), data);
+    buildBarChart(document.getElementById('siteEnrollmentTable'), data);
+    timeSeriesEnrollment(document.getElementById('timeSeriesEnrollment'), data);
 
     // Check on date changes 
     setInterval(() => {
@@ -127,12 +133,6 @@ function buildDashboard() {
             rangeDates.end = end;
         }
     }, 500);
-
-    // Initial build out
-    buildTable(document.getElementById('siteEnrollmentTable'), data);
-    buildBarChart(document.getElementById('siteEnrollmentTable'), data);
-    timeSeriesEnrollment(document.getElementById('timeSeriesEnrollment'), data);
-    document.getElementById('datedropdown').dispatchEvent(new Event("change"));
 
     // Make content Visible
     document.getElementById('content').parentElement.classList.remove('hidden');
