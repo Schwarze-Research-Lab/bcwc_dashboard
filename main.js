@@ -329,7 +329,13 @@ function buildTable(element, data) {
         cell = document.createElement('div');
         cell.innerHTML = `<b></b>`;
         if (siteCode != 999 && data.site[siteCode]) {
-            cell.innerHTML = `<b>${(100 * ((grid[(rowSize * 2) + 1 + index].textContent) / (grid[rowSize + 1 + index].textContent))).toFixed(2)}%</b>`;
+            let numerator = grid[(rowSize * 2) + 1 + index].textContent;
+            let denominator = grid[rowSize + 1 + index].textContent;
+            if (denominator == 0) {
+                numerator = 0;
+                denominator = 1;
+            }
+            cell.innerHTML = `<b>${(100 * (numerator / denominator)).toFixed(2)}%</b>`;
         }
         if (siteInfo.short != "UNK" || window.location.hostname == "localhost") {
             cssTable.appendChild(cell);
@@ -568,7 +574,7 @@ function getEnrollemntData() {
     const now = (new Date()).getTime();
     o.months_study_active = (now - (new Date(o.date_of_first_screen)).getTime()) / MONTH_1;
     for (const studySite in o.site) {
-        o.site[studySite].weeks_active = (now - (new Date(o.date_of_first_screen)).getTime()) / WEEK_1;
+        o.site[studySite].weeks_active = (now - (new Date(o.site[studySite].date_of_first_screen)).getTime()) / WEEK_1;
     }
     return o;
 }
