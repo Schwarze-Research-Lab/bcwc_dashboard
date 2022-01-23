@@ -10,8 +10,15 @@ let rangeDates = {
     start: "",
     end: "",
 }
+
+// MDY toLocalDate config
 const mdy_date = { year: 'numeric', month: '2-digit', day: '2-digit' };
+
+// Study Status Options and Colors
 const study_statuses = ["Screened", "Elligible", "Enrolled", "Declined", "Excluded"];
+const status_colors = ['#FF8B00', '#1668BD', '#349C55', '#74226C', '#BA3B46'];
+
+// Mapping for site info between various codes
 const site_map = {
     94: {
         'short': 'C',
@@ -50,6 +57,17 @@ const site_map = {
         'display': 'Unknown'
     },
 };
+
+// Default Color Options for Sites
+let site_colors;
+const colorScale = d3.interpolateRainbow;
+const colorRangeInfo = {
+    colorStart: 0,
+    colorEnd: 1,
+    useEndAsStart: false,
+};
+
+
 init();
 
 // Main build for page elements (Nav and data load)
@@ -105,6 +123,10 @@ function buildDashboard() {
 
     // Page hashes and other static content are defined in HTML
 
+    // Finish color config
+    site_colors = interpolateColors(Object.keys(site_map).length, colorScale, colorRangeInfo);
+
+    // Get Data and build summary
     let data = getEnrollemntData();
     buildSummary(document.getElementById('enrollmentSummary'), data);
 
@@ -115,7 +137,7 @@ function buildDashboard() {
     // Initial build out
     buildTable(document.getElementById('siteEnrollmentTable'), data);
     buildBarChart(document.getElementById('siteEnrollmentTable'), data);
-    timeSeriesEnrollment(document.getElementById('timeSeriesEnrollment'), data);
+    buildLineChart(document.getElementById('siteLineChart'), data);
 
     // Check on date changes 
     setInterval(() => {
@@ -201,24 +223,15 @@ function buildSummary(element, data) {
     insert2colRow(table, "Excluded", data.excluded);
     insert2colRow(table, "Study Age", Math.round(data.months_study_active, 1) + "<sm>months<sm>");
 
-    // Default Color Options
-    const colorScale = d3.interpolateRainbow;
-    const colorRangeInfo = {
-        colorStart: 0,
-        colorEnd: 1,
-        useEndAsStart: false,
-    };
-
     // Generate the chart
     const labels = Object.keys(data.site).map(x => site_map[x].display);
-    const colors = interpolateColors(labels.length, colorScale, colorRangeInfo);
     const config = {
         type: 'doughnut',
         data: {
             labels: labels,
             datasets: [{
                 data: Object.entries(data.site).map(x => x[1].enrolled),
-                backgroundColor: colors,
+                backgroundColor: site_colors,
                 hoverOffset: 4
             }]
         },
@@ -400,7 +413,6 @@ function buildBarChart(element, data) {
 
     // Generate the chart
     const labels = Object.keys(data.site).map(x => site_map[x].display);
-    const colors = ['#FF8B00', '#1668BD', '#349C55', '#74226C', '#BA3B46'];
     let dataSet = [];
 
     // For the 3 status types
@@ -426,7 +438,7 @@ function buildBarChart(element, data) {
 
         dataSet.push({
             data: innerData,
-            backgroundColor: colors[index],
+            backgroundColor: status_colors[index],
             label: title
         });
 
@@ -457,8 +469,44 @@ function buildBarChart(element, data) {
 }
 
 
-function timeSeriesEnrollment(element, data) {
-    // TODO
+function buildLineChart(element, data) {
+
+    let dataSets = [];
+
+    Object.entries(site_map).forEach((entry, index) => {
+        let [code, siteInfo] = entry;
+
+        dataSets.push({
+            label: siteInfo.display,
+            data: [],
+            fille: false,
+            borderColor: site_colors[index],
+            tension: 0.1
+        })
+    });
+
+    let dt = new Date(data.date_of_first_screen);
+    dt.setDate(1);
+    let stop = new Date();
+    stop = stop.getTime();
+    let labels = [];
+    while (dt.getTime() < stop) {
+        labels.push(dt.toLocaleDateString("en-US", mdy_date));
+        dt.setDate(dt.getDate() + 7);
+    }
+
+    const config = {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: dataSets
+        },
+    };
+
+    // Paint to screen
+    const canvas = element.getElementsByTagName('canvas')[0];
+    new Chart(canvas, config);
+
 }
 
 // Fetch and organize all data

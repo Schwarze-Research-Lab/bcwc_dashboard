@@ -141,6 +141,8 @@
           <!-- Time Range Row -->
           <div class="flex items-center justify-end">
 
+            <h2 class="text-gray-800 text-3xl font-semibold relative hackStudyStatus">Study Status</h2>
+
             <div id="datedropdown" class="h-10">
               <div class="h-full flex items-center">
                 <div class="h-full relative w-60 mr-10">
@@ -200,12 +202,11 @@
         </div>
       </div>
 
-      <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg xl:col-span-2" data-hash="dash"
-        id="timeSeriesEnrollment">
-        <div class="">
-          <h2 class="text-gray-800 text-3xl font-semibold">Enrollment Over Time</h2>
+      <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg xl:col-span-2" data-hash="dash" id="siteLineChart">
+        <div class="w-full">
+          <h2 class="text-gray-800 text-3xl font-semibold">Screened Overtime</h2>
           <p class="mt-2 text-gray-600"> </p>
-          <div>
+          <div class="mx-4 w-full">
             <canvas></canvas>
           </div>
         </div>
