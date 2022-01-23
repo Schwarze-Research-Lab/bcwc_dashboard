@@ -2,6 +2,7 @@ import './style.css';
 import testCache from './testCache.json';
 import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import ChartZoom from 'chartjs-plugin-zoom';
 import * as d3 from 'd3-scale-chromatic';
 
 let redcap = [];
@@ -67,6 +68,18 @@ const colorRangeInfo = {
     useEndAsStart: false,
 };
 
+// Util Func - Stolen from online, returns the iso week number
+Date.prototype.getWeek = function () {
+    var date = new Date(this.getTime());
+    date.setHours(0, 0, 0, 0);
+    // Thursday in current week decides the year.
+    date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+    // January 4 is always in week 1.
+    var week1 = new Date(date.getFullYear(), 0, 4);
+    // Adjust to Thursday in week 1 and count number of weeks from date to week1.
+    return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
+        - 3 + (week1.getDay() + 6) % 7) / 7);
+}
 
 init();
 
@@ -471,22 +484,15 @@ function buildBarChart(element, data) {
 
 function buildLineChart(element, data) {
 
-    let dataSets = [];
 
-    Object.entries(site_map).forEach((entry, index) => {
-        let [code, siteInfo] = entry;
-
-        dataSets.push({
-            label: siteInfo.display,
-            data: [],
-            fille: false,
-            borderColor: site_colors[index],
-            tension: 0.1
-        })
-    });
-
+    // Set start to first Sunday of the month of first screen
     let dt = new Date(data.date_of_first_screen);
     dt.setDate(1);
+    while (dt.getDay() != 0) {
+        dt.setDate(dt.getDate() + 1);
+    }
+
+    // Build out labels (Sundays of every week)
     let stop = new Date();
     stop = stop.getTime();
     let labels = [];
@@ -495,17 +501,84 @@ function buildLineChart(element, data) {
         dt.setDate(dt.getDate() + 7);
     }
 
+    // Generate the datasets by week
+    let dataSets = [];
+    Object.entries(site_map).forEach((entry, index) => {
+        let [code, siteInfo] = entry;
+        if (window.location.hostname != "localhost" && code == 999) {
+            return;
+        }
+        let weeklyData = new Array(labels.length).fill(0);
+        Object.entries(data.time_series).forEach(timeInfo => {
+            let [date, dateInfo] = timeInfo;
+            if (!dateInfo[code]) {
+                return;
+            }
+            let dt = new Date(date);
+            weeklyData[dt.getWeek()] += dateInfo[code].screened;
+        });
+        dataSets.push({
+            label: siteInfo.display,
+            data: weeklyData,
+            fill: (index == 0) ? true : '-1',
+            borderColor: site_colors[index],
+            backgroundColor: site_colors[index].replace(')', ', 0.25)'),
+            tension: 0.5
+        })
+    });
+
     const config = {
         type: 'line',
         data: {
             labels: labels,
             datasets: dataSets
         },
+        plugins: [ChartZoom],
+        options: {
+            scales: {
+                y: {
+                    stacked: true,
+                    ticks: {
+                        stepSize: 20
+                    }
+                },
+                x: {
+                    ticks: {
+                        autoSkip: true,
+                        maxTicksLimit: Math.round(labels.length / 2)
+                    }
+                }
+            },
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: true
+                    },
+                    zoom: {
+                        drag: {
+                            enabled: true,
+                        },
+                        wheel: {
+                            enabled: true,
+                        },
+                        pinch: {
+                            enabled: true,
+                        },
+                        mode: 'x',
+                    }
+                }
+            }
+        },
     };
 
     // Paint to screen
     const canvas = element.getElementsByTagName('canvas')[0];
-    new Chart(canvas, config);
+    let chart = new Chart(canvas, config);
+
+    // Setup reset button
+    element.getElementsByTagName('button')[0].onclick = () => {
+        chart.resetZoom();
+    };
 
 }
 
