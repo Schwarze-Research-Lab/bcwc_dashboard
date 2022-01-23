@@ -264,7 +264,7 @@ function buildTable(element, data) {
 
     // Set up
     let cell;
-    let cssTable = element.getElementsByClassName('grid')[0];
+    let cssTable = document.getElementById('siteTable');
     const offset = window.location.hostname == 'localhost' ? 2 : 1;
     cssTable.style.gridTemplateColumns = `repeat(${Object.keys(site_map).length + offset}, minmax(0, 1fr))`;
     let start = document.getElementById('startDate').value || '2000-01-01';
@@ -336,7 +336,7 @@ function buildTable(element, data) {
     cell.innerHTML = `<b>% Elligible</b>`;
     cssTable.appendChild(cell);
     const rowSize = Object.keys(site_map).length + (window.location.hostname == 'localhost' ? 2 : 1);
-    const grid = document.getElementById("siteEnrollmentTable").getElementsByClassName("grid")[0].getElementsByTagName('div');
+    const grid = document.getElementById("siteTable").getElementsByTagName('div');
     Object.entries(site_map).forEach((entry, index) => {
         let [siteCode, siteInfo] = entry;
         cell = document.createElement('div');
