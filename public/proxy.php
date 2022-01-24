@@ -6,7 +6,7 @@ $fields = [
     'rescreen_me', 'screen_site', 'screen_datetime', 'decision_final', 'screen_neph_exclude',
     'screen_approach_method', 'first_neph_seen', 'facit_t0_complete', 'pt_t1_qoc_complete'
 ];
-$events = ['screen_arm_1', 'first_study_visit_arm_1', 't1_arm_1'];
+$events = ['screen_arm_1', 'first_study_visit_arm_1', 't0_arm_1', 't1_arm_1'];
 
 $data = [
     'token' => $token,

@@ -2,22 +2,18 @@ The [site](https://bcwc.surgery.wisc.edu/) is built using a modern tailwind vite
 
 ## Todo List
 
-* Survey completion
-    * T0 survey completion= for all on study (rescreen_me= 1), what percent have facit_t0_complete = 1 
-    * T1 survey completion= for all on study (rescreen_me= 1), what percent have pt_t1_qoc_complete = 1 
-* Questions
-    * Line Chart
-        * We crash to zero a lot even with 1 week buckets. Issue?
-    * Numb eligible not approached   
-        * Should this be treated as a study status?
-        * screen_approach_method = 3
-    * Date of last decline  
-        * Not sure if we can get at this info easily, might need to make redcap project changes
-    * Enrollment by nephrologist  
-        * How do we want to present nephrologist info?
-        * first_neph_seen
-    * Total screened by nephrologist 
-        * I’d like to have total number nephrologists enrolled at site on here but it’s a little more complicated in that their drop out/other status info is saved in a different redcap project leave
+* Line Chart
+    * We crash to zero a lot even with 1 week buckets. Issue?
+* Numb eligible not approached   
+    * Should this be treated as a study status?
+    * screen_approach_method = 3
+* Date of last decline  
+    * Not sure if we can get at this info easily, might need to make redcap project changes
+* Enrollment by nephrologist  
+    * How do we want to present nephrologist info?
+    * first_neph_seen
+* Total screened by nephrologist 
+    * I’d like to have total number nephrologists enrolled at site on here but it’s a little more complicated in that their drop out/other status info is saved in a different redcap project leave
 
 
 ## Local Dev Deploy

@@ -308,6 +308,10 @@ function buildTable(element, data) {
     cssTable.appendChild(cell);
 
     // Populate table
+    let surveyComplete = {
+        t0: {},
+        t1: {},
+    };
     study_statuses.forEach(title => {
         cell = document.createElement('div');
         cell.classList.add('overflow-hidden');
@@ -327,6 +331,10 @@ function buildTable(element, data) {
                     let [date, siteData] = timeEntry;
                     if (date >= start && date <= end && siteData[siteCode]) {
                         tmp += siteData[siteCode][title.toLowerCase()];
+                        surveyComplete.t0[siteCode] = surveyComplete.t0[siteCode] || 0;
+                        surveyComplete.t0[siteCode] += siteData[siteCode]['t0complete'] || 0;
+                        surveyComplete.t1[siteCode] = surveyComplete.t1[siteCode] || 0;
+                        surveyComplete.t1[siteCode] += siteData[siteCode]['t1complete'] || 0;
                     }
                 });
                 if (title == "Screened" && tmp <= 15) {
@@ -370,6 +378,32 @@ function buildTable(element, data) {
     cell = document.createElement('div');
     cell.innerHTML = `<b>${(100 * ((grid[(rowSize * 3) - 1].textContent) / (grid[(rowSize * 2) - 1].textContent))).toFixed(2)}%</b>`;
     cssTable.appendChild(cell);
+
+    // T0 and T1 Complete Rows
+    ["T0 Complete", "T1 Complete"].forEach(title => {
+        let total = 0;
+        cell = document.createElement('div');
+        cell.classList.add('overflow-hidden');
+        cell.innerHTML = `<b>${title}</b>`;
+        cssTable.appendChild(cell);
+        Object.entries(site_map).forEach((entry, index) => {
+            let [siteCode, siteInfo] = entry;
+            cell = document.createElement('div');
+            cell.innerHTML = `<b></b>`;
+            if (siteCode != 999 && data.site[siteCode]) {
+                let tmp = surveyComplete[title.split(' ')[0].toLowerCase()][siteCode];
+                cell.innerHTML = `<b>${tmp}</b>`;
+                total += tmp;
+            }
+            if (siteInfo.short != "UNK" || window.location.hostname == "localhost") {
+                cssTable.appendChild(cell);
+            }
+        });
+        cell = document.createElement('div');
+        cell.innerHTML = `<b>${total}</b>`;
+        cssTable.appendChild(cell);
+    })
+
 
     // Populate unique rows of the table with time insensative info
     let borderClass = ['border-t', 'border-gray-400'];
@@ -483,7 +517,6 @@ function buildBarChart(element, data) {
 
 
 function buildLineChart(element, data) {
-
 
     // Set start to first Sunday of the month of first screen
     let dt = new Date(data.date_of_first_screen);
@@ -632,6 +665,8 @@ function getEnrollemntData() {
         !(o.time_series[date][screenSite].elligible > -1) && (o.time_series[date][screenSite].elligible = 0);
         !(o.time_series[date][screenSite].declined > -1) && (o.time_series[date][screenSite].declined = 0);
         !(o.time_series[date][screenSite].excluded > -1) && (o.time_series[date][screenSite].excluded = 0);
+        !(o.time_series[date][screenSite].t0complete > -1) && (o.time_series[date][screenSite].t0complete = 0);
+        !(o.time_series[date][screenSite].t1complete > -1) && (o.time_series[date][screenSite].t1complete = 0);
         o.time_series[date][screenSite]['screened'] += 1
 
         // Site indexed data
@@ -664,6 +699,14 @@ function getEnrollemntData() {
 
             if (data.screen_datetime > (o.site[screenSite].most_recent_enrollment || "")) {
                 o.site[screenSite].most_recent_enrollment = data.screen_datetime;
+            }
+
+            if (data.facit_t0_complete == "1") {
+                o.time_series[date][screenSite]['t0complete'] += 1;
+            }
+
+            if (data.pt_t1_qoc_complete == "1") {
+                o.time_series[date][screenSite]['t1complete'] += 1;
             }
 
             // if (data.screen_datetime > (o.site[screenSite].most_recent_decline || "")) {
