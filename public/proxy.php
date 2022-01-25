@@ -38,10 +38,16 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data, '', '&'));
 $response = curl_exec($ch);
 curl_close($ch);
 
-$response = json_decode($response, true);
+$json = json_decode($response, true);
+if ($json['error']) {
+    header('Content-Type: application/json; charset=utf-8');
+    echo $response;
+    exit;
+}
+
 $formatted = [];
 $idCache = [];
-foreach ($response as $instance) {
+foreach ($json as $instance) {
     $record = $instance['record_id'];
     unset($instance['record_id']);
     unset($instance['redcap_event_name']);

@@ -5,6 +5,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import ChartZoom from 'chartjs-plugin-zoom';
 import * as d3 from 'd3-scale-chromatic';
 
+const support = "Adam Nunez at adam.nunez@ctri.wisc.edu"
 let redcap = [];
 let rangeDates = {
     dropDownChange: false,
@@ -91,6 +92,13 @@ function init() {
         fetch("proxy.php")
             .then(response => response.json())
             .then(data => {
+                if (data.error) {
+                    const textArea = document.getElementById('loadingScreen').getElementsByTagName('div')[0];
+                    textArea.classList.remove('animate-bounce');
+                    textArea.innerHTML = `Unable to fetch data from Redcap, the server may be down or there may be a permissions 
+                    issue with the project. Reach out to ${support} for assistance if the issue persists.<br> Error: ${data.error}`;
+                    return;
+                }
                 redcap = data;
                 buildDashboard();
             });
