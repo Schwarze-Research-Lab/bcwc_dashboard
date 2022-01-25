@@ -4,11 +4,6 @@ The [site](https://bcwc.surgery.wisc.edu/) is built using a modern tailwind vite
 
 * New Pie Charts
     * Study Status - Not apprached, Declined, Excluded
-* Date of last decline  
-    * Not sure if we can get at this info easily, might need to make redcap project changes
-    * first_appt_date
-* Survey Comp (bug)
-    * Numbers are over by a factor of 6. 
 * Line Chart 
     * Playing with it
 

@@ -348,11 +348,11 @@ function buildTable(element, data) {
                     }
                 });
                 if (title == "Screened" && tmp <= 15) {
-                    cell.innerHTML = `<b class="text-red-600">${tmp || 0}</b>`;
+                    cell.innerHTML = `<b class="text-red-600">${tmp}</b>`;
                 } else {
-                    cell.innerHTML = `<b>${tmp || 0}</b>`;
+                    cell.innerHTML = `<b>${tmp}</b>`;
                 }
-                rowTotal += tmp || 0;
+                rowTotal += tmp;
             }
             cssTable.appendChild(cell);
         });
@@ -391,17 +391,19 @@ function buildTable(element, data) {
 
     // T0 and T1 Complete Rows
     ["T0 Complete", "T1 Complete"].forEach(title => {
-        let total = 0;
+
         cell = document.createElement('div');
         cell.classList.add('overflow-hidden');
         cell.innerHTML = `<b>${title}</b>`;
         cssTable.appendChild(cell);
-        Object.entries(site_map).forEach((entry, index) => {
+
+        let total = 0;
+        Object.entries(site_map).forEach(entry => {
             let [siteCode, siteInfo] = entry;
             cell = document.createElement('div');
             cell.innerHTML = `<b></b>`;
             if (siteCode != 999 && data.site[siteCode]) {
-                let tmp = surveyComplete[title.split(' ')[0].toLowerCase()][siteCode];
+                let tmp = surveyComplete[title.split(' ')[0].toLowerCase()][siteCode] / 6;
                 cell.innerHTML = `<b>${tmp}</b>`;
                 total += tmp;
             }
@@ -409,6 +411,7 @@ function buildTable(element, data) {
                 cssTable.appendChild(cell);
             }
         });
+
         cell = document.createElement('div');
         cell.innerHTML = `<b>${total}</b>`;
         cssTable.appendChild(cell);
@@ -443,8 +446,8 @@ function buildTable(element, data) {
             cell.classList.add(...borderClass);
             cell.innerHTML = `<b></b>`;
             if (siteCode != 999 && data.site[siteCode] && data.site[siteCode][rowConfig.varName]) {
-                if (['most_recent_enrollment', ''].includes(rowConfig.varName)) {
-                    cell.innerHTML = `<b>${(new Date(data.site[siteCode]['most_recent_enrollment'])).toLocaleDateString("en-US", mdy_date)}</b>`;
+                if (['most_recent_enrollment', 'most_recent_decline'].includes(rowConfig.varName)) {
+                    cell.innerHTML = `<b>${(new Date(data.site[siteCode][rowConfig.varName])).toLocaleDateString("en-US", mdy_date)}</b>`;
                 }
                 else {
                     cell.innerHTML = `<b>${Math.round(data.site[siteCode][rowConfig.varName])}<sm>months</sm></b>`;
@@ -719,9 +722,6 @@ function getEnrollemntData() {
                 o.time_series[date][screenSite]['t1complete'] += 1;
             }
 
-            // if (data.screen_datetime > (o.site[screenSite].most_recent_decline || "")) {
-            //     o.site[screenSite].most_recent_decline = data.screen_datetime;
-            // }
         }
 
         // Last minute stuff
@@ -735,6 +735,9 @@ function getEnrollemntData() {
             if (data.screen_approach_method && data.screen_approach_method == "3") {
                 o.elligiblena += 1;
                 o.time_series[date][screenSite]['elligiblena'] += 1;
+            }
+            if (data.first_appt_date > (o.site[screenSite].most_recent_decline || "")) {
+                o.site[screenSite].most_recent_decline = data.first_appt_date;
             }
         }
 
