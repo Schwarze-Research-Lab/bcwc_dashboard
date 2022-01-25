@@ -16,8 +16,8 @@ let rangeDates = {
 const mdy_date = { year: 'numeric', month: '2-digit', day: '2-digit' };
 
 // Study Status Options and Colors
-const study_statuses = ["Screened", "Elligible", "Enrolled", "Declined", "Excluded"];
-const status_colors = ['#FF8B00', '#1668BD', '#349C55', '#74226C', '#BA3B46'];
+const study_statuses = ["Screened", "Elligible", "Elligible (NA)", "Enrolled", "Declined", "Excluded"];
+const status_colors = ['#FF8B00', '#1668BD', '', '#349C55', '#74226C', '#BA3B46'];
 
 // Mapping for site info between various codes
 const site_map = {
@@ -228,8 +228,9 @@ function buildSummary(element, data) {
 
     // Build Summary Table
     const table = element.getElementsByTagName('table')[0];
-    insert2colRow(table, "Screened", data.screened);
+    insert2colRow(table, "Screen Fail", data.screened);
     insert2colRow(table, "Elligible", data.elligible);
+    insert2colRow(table, "Elligible <sm>(Not approached)</sm>", data.elligiblena);
     insert2colRow(table, "Enrolled", data.enrolled);
     insert2colRow(table, "Enrolled <sm>(30days)<sm>", data.last_30_enrolled);
     insert2colRow(table, "Declined", data.declined);
@@ -315,7 +316,8 @@ function buildTable(element, data) {
     study_statuses.forEach(title => {
         cell = document.createElement('div');
         cell.classList.add('overflow-hidden');
-        cell.innerHTML = `<b>${title}</b>`;
+        let displayTitle = title == "Screened" ? "Screen Fail" : title;
+        cell.innerHTML = `<b>${displayTitle}</b>`;
         cssTable.appendChild(cell);
         let rowTotal = 0;
         Object.entries(site_map).forEach(entry => {
@@ -330,7 +332,7 @@ function buildTable(element, data) {
                 Object.entries(data.time_series).forEach(timeEntry => {
                     let [date, siteData] = timeEntry;
                     if (date >= start && date <= end && siteData[siteCode]) {
-                        tmp += siteData[siteCode][title.toLowerCase()];
+                        tmp += siteData[siteCode][title.toLowerCase().replace(/[\(\) ]/g, '')];
                         surveyComplete.t0[siteCode] = surveyComplete.t0[siteCode] || 0;
                         surveyComplete.t0[siteCode] += siteData[siteCode]['t0complete'] || 0;
                         surveyComplete.t1[siteCode] = surveyComplete.t1[siteCode] || 0;
@@ -418,7 +420,7 @@ function buildTable(element, data) {
         },
         {
             title: "Time Active",
-            varName: "weeks_active"
+            varName: "months_active"
         }
     ];
     staticConfig.forEach(rowConfig => {
@@ -437,7 +439,7 @@ function buildTable(element, data) {
                     cell.innerHTML = `<b>${(new Date(data.site[siteCode]['most_recent_enrollment'])).toLocaleDateString("en-US", mdy_date)}</b>`;
                 }
                 else {
-                    cell.innerHTML = `<b>${Math.round(data.site[siteCode][rowConfig.varName])}<sm>weeks</sm></b>`;
+                    cell.innerHTML = `<b>${Math.round(data.site[siteCode][rowConfig.varName])}<sm>months</sm></b>`;
                 }
             }
             if (siteInfo.short != "UNK" || window.location.hostname == "localhost") {
@@ -477,7 +479,7 @@ function buildBarChart(element, data) {
             Object.entries(data.time_series).forEach(timeEntry => {
                 let [date, siteData] = timeEntry;
                 if (siteData[code] && (date >= start) && (date <= end)) {
-                    count += siteData[code][title.toLowerCase()];
+                    count += siteData[code][title.toLowerCase().replace(/[\(\) ]/g, '')];
                 }
             });
             innerData.push(count);
@@ -486,7 +488,7 @@ function buildBarChart(element, data) {
         dataSet.push({
             data: innerData,
             backgroundColor: status_colors[index],
-            label: title
+            label: title == "Screened" ? "Screen Fail" : title
         });
 
     });
@@ -627,6 +629,7 @@ function getEnrollemntData() {
         screened: Object.keys(redcap).length,
         enrolled: 0,
         elligible: 0,
+        elligiblena: 0,
         declined: 0,
         excluded: 0,
         last_30_enrolled: 0,
@@ -663,6 +666,7 @@ function getEnrollemntData() {
         !(o.time_series[date][screenSite].screened) && (o.time_series[date][screenSite].screened = 0);
         !(o.time_series[date][screenSite].enrolled > -1) && (o.time_series[date][screenSite].enrolled = 0);
         !(o.time_series[date][screenSite].elligible > -1) && (o.time_series[date][screenSite].elligible = 0);
+        !(o.time_series[date][screenSite].elligiblena > -1) && (o.time_series[date][screenSite].elligiblena = 0);
         !(o.time_series[date][screenSite].declined > -1) && (o.time_series[date][screenSite].declined = 0);
         !(o.time_series[date][screenSite].excluded > -1) && (o.time_series[date][screenSite].excluded = 0);
         !(o.time_series[date][screenSite].t0complete > -1) && (o.time_series[date][screenSite].t0complete = 0);
@@ -712,15 +716,21 @@ function getEnrollemntData() {
             // if (data.screen_datetime > (o.site[screenSite].most_recent_decline || "")) {
             //     o.site[screenSite].most_recent_decline = data.screen_datetime;
             // }
+        } else if (data.first_appt_date) {
+            console.log(data.first_appt_date);
         }
 
         // Last minute stuff
-        if (["1", "2", "3"].includes(data.decision_final)) {
+        if (["1", "2", "3"].includes(data.decision_final) || (data.screen_approach_method && data.screen_approach_method == "3")) {
             o.elligible += 1;
             o.time_series[date][screenSite]['elligible'] += 1;
-            if (data.decision_final == "2") {
+            if (data.decision_final && data.decision_final == "2") {
                 o.declined += 1;
                 o.time_series[date][screenSite]['declined'] += 1;
+            }
+            if (data.screen_approach_method && data.screen_approach_method == "3") {
+                o.elligiblena += 1;
+                o.time_series[date][screenSite]['elligiblena'] += 1;
             }
         }
 
@@ -739,6 +749,7 @@ function getEnrollemntData() {
     o.months_study_active = (now - (new Date(o.date_of_first_screen)).getTime()) / MONTH_1;
     for (const studySite in o.site) {
         o.site[studySite].weeks_active = (now - (new Date(o.site[studySite].date_of_first_screen)).getTime()) / WEEK_1;
+        o.site[studySite].months_active = (now - (new Date(o.site[studySite].date_of_first_screen)).getTime()) / MONTH_1;
     }
     return o;
 }

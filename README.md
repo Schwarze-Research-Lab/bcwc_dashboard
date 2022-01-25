@@ -4,16 +4,14 @@ The [site](https://bcwc.surgery.wisc.edu/) is built using a modern tailwind vite
 
 * Line Chart
     * We crash to zero a lot even with 1 week buckets. Issue?
-* Numb eligible not approached   
-    * Should this be treated as a study status?
-    * screen_approach_method = 3
-* Date of last decline  
-    * Not sure if we can get at this info easily, might need to make redcap project changes
 * Enrollment by nephrologist  
     * How do we want to present nephrologist info?
     * first_neph_seen
 * Total screened by nephrologist 
     * I’d like to have total number nephrologists enrolled at site on here but it’s a little more complicated in that their drop out/other status info is saved in a different redcap project leave
+* Low Priority
+    * Date of last decline  
+        * Not sure if we can get at this info easily, might need to make redcap project changes
 
 
 ## Local Dev Deploy
