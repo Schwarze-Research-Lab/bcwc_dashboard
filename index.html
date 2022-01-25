@@ -102,25 +102,6 @@
     <div id="content" class="grid grid-cols-1 xl:grid-cols-2 gap-4">
 
       <!-- Card template -->
-
-      <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg" data-hash="dash" id="exampleCard">
-        <div class="">
-          <h2 class="text-gray-800 text-3xl font-semibold">Enrollment Dashboard</h2>
-          <p class="mt-2 text-gray-600">This will either be removed or replaced by a pie chart specific to individual
-            sites. <br><br>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed efficitur purus id
-            augue vehicula, dapibus luctus nulla sodales. Proin suscipit elit id nibh vehicula elementum. Etiam faucibus
-            tortor eget fringilla dignissim. Mauris id interdum tortor. Sed turpis ipsum, ullamcorper sit amet lorem
-            nec, convallis tempor massa. Cras vestibulum euismod lacus quis porttitor. Proin non pharetra massa, euismod
-            euismod ligula. Aenean elementum urna in nisi ullamcorper facilisis. Suspendisse molestie enim vitae purus
-            auctor auctor sed a nibh. Phasellus efficitur, urna vitae varius dapibus, eros neque finibus nisl, vitae
-            tincidunt massa odio nec tellus. Mauris et interdum lectus. Pellentesque placerat aliquam velit. Phasellus
-            ornare turpis ac eros sollicitudin, nec efficitur odio sodales.
-          </p>
-          <div></div>
-        </div>
-      </div>
-
       <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg" data-hash="dash" id="enrollmentSummary">
         <div class="w-full">
           <h2 class="text-gray-800 text-3xl font-semibold">Total Enrollment</h2>
@@ -134,6 +115,23 @@
               <table class="table-auto w-full"></table>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg" data-hash="dash" id="exampleCard">
+        <div class="">
+          <h2 class="text-gray-800 text-3xl font-semibold">Pie Charts Eventually</h2>
+          <p class="mt-2 text-gray-600">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed efficitur purus id
+            augue vehicula, dapibus luctus nulla sodales. Proin suscipit elit id nibh vehicula elementum. Etiam faucibus
+            tortor eget fringilla dignissim. Mauris id interdum tortor. Sed turpis ipsum, ullamcorper sit amet lorem
+            nec, convallis tempor massa. Cras vestibulum euismod lacus quis porttitor. Proin non pharetra massa, euismod
+            euismod ligula. Aenean elementum urna in nisi ullamcorper facilisis. Suspendisse molestie enim vitae purus
+            auctor auctor sed a nibh. Phasellus efficitur, urna vitae varius dapibus, eros neque finibus nisl, vitae
+            tincidunt massa odio nec tellus. Mauris et interdum lectus. Pellentesque placerat aliquam velit. Phasellus
+            ornare turpis ac eros sollicitudin, nec efficitur odio sodales.
+          </p>
+          <div></div>
         </div>
       </div>
 
@@ -228,26 +226,16 @@
         </div>
       </div>
 
-      <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg xl:col-span-2" data-hash="dash" id="nephTable">
-        <div class="">
-          <h2 class="text-gray-800 text-3xl font-semibold">Nephrology Table</h2>
-          <p class="mt-2 text-gray-600"> </p>
-          <div>
-            <canvas></canvas>
-          </div>
-        </div>
-      </div>
-
     </div>
 
   </div>
 
   <footer class="bg-gray-800">
-    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
-      <div class="relative flex items-center justify-between h-16">
+    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 h-40">
+      <div class="relative flex items-center justify-between h-full">
         <div class="hidden md:grid grid-cols-3 text-white justify-center">
           <div id="dataPullStats" class="text-gray-400 text-sm"></div>
-          <div class="col-span-2 text-gray-400 text-sm">Data is pulled from the <a
+          <div class="col-span-2 text-gray-300 text-sm">Data is pulled from the <a
               href=" http://redcap.surgery.wisc.edu/redcap/">
               UW Department of Surgery REDCap</a> instance via the restful web API. All code is hosted on UW DOS
             controlled

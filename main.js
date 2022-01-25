@@ -557,8 +557,7 @@ function buildLineChart(element, data) {
             data: weeklyData,
             fill: (index == 0) ? true : '-1',
             borderColor: site_colors[index],
-            backgroundColor: site_colors[index].replace(')', ', 0.25)'),
-            tension: 0.5
+            backgroundColor: site_colors[index].replace(')', ', 0.25)')
         })
     });
 
@@ -685,12 +684,11 @@ function getEnrollemntData() {
             o.site[screenSite].date_of_first_screen = data.screen_datetime;
         }
 
-        // Enrolled into sutdy
         if (data.rescreen_me == "1") {
             o.enrolled += 1;
             o.time_series[date][screenSite]['enrolled'] += 1;
 
-            const last30Days = ((new Date()).getTime() - (new Date(data.screen_datetime)).getTime()) < DAYS_30;
+            const last30Days = ((new Date()).getTime() - (new Date(data.first_appt_date)).getTime()) < DAYS_30;
             if (last30Days) {
                 o.last_30_enrolled += 1;
             }
@@ -716,8 +714,6 @@ function getEnrollemntData() {
             // if (data.screen_datetime > (o.site[screenSite].most_recent_decline || "")) {
             //     o.site[screenSite].most_recent_decline = data.screen_datetime;
             // }
-        } else if (data.first_appt_date) {
-            console.log(data.first_appt_date);
         }
 
         // Last minute stuff
@@ -738,7 +734,7 @@ function getEnrollemntData() {
             o.date_of_first_screen = data.screen_datetime;
         }
 
-        if (data.screen_neph_exclude == "1") {
+        if (data.screen_neph_exclude == "1" || data.screen_rc_exclude == "1") {
             o.excluded += 1;
             o.time_series[date][screenSite]['excluded'] += 1;
         }

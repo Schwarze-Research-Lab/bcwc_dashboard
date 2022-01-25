@@ -3,7 +3,7 @@ $token = trim(file_get_contents("/home/bcwc/secret")); // Read in token from hom
 $url = 'https://redcap.surgery.wisc.edu/redcap/api/';
 $fields = [
     'record_id',
-    'rescreen_me', 'screen_site', 'screen_datetime', 'decision_final', 'screen_neph_exclude',
+    'rescreen_me', 'screen_site', 'screen_datetime', 'decision_final', 'screen_neph_exclude', 'screen_rc_exclude',
     'screen_approach_method', 'first_neph_seen', 'facit_t0_complete', 'pt_t1_qoc_complete', 'first_appt_date'
 ];
 $events = ['screen_arm_1', 'first_study_visit_arm_1', 't0_arm_1', 't1_arm_1'];

@@ -2,17 +2,15 @@ The [site](https://bcwc.surgery.wisc.edu/) is built using a modern tailwind vite
 
 ## Todo List
 
-* Line Chart
-    * We crash to zero a lot even with 1 week buckets. Issue?
-* Enrollment by nephrologist  
-    * How do we want to present nephrologist info?
-    * first_neph_seen
-* Total screened by nephrologist 
-    * I’d like to have total number nephrologists enrolled at site on here but it’s a little more complicated in that their drop out/other status info is saved in a different redcap project leave
-* Low Priority
-    * Date of last decline  
-        * Not sure if we can get at this info easily, might need to make redcap project changes
-
+* New Pie Charts
+    * Study Status - Not apprached, Declined, Excluded
+* Date of last decline  
+    * Not sure if we can get at this info easily, might need to make redcap project changes
+    * first_appt_date
+* Survey Comp (bug)
+    * Numbers are over by a factor of 6. 
+* Line Chart 
+    * Playing with it
 
 ## Local Dev Deploy
 ```
