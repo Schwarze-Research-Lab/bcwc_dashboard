@@ -4,6 +4,7 @@ import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import ChartZoom from 'chartjs-plugin-zoom';
 import * as d3 from 'd3-scale-chromatic';
+Chart.register(ChartZoom);
 
 const support = "Adam Nunez at adam.nunez@ctri.wisc.edu"
 let redcap = [];
@@ -28,7 +29,7 @@ const study_status = {
     },
     elligiblena: {
         name: "Elligible (NA)",
-        color: "",
+        color: "#666666",
     },
     enrolled: {
         name: "Enrolled",
@@ -294,7 +295,6 @@ function buildSummary(element, data) {
 function buildFailureSummary(element, data) {
 
     // Generate the chart
-    console.log(Object.entries(data.site).map(x => x[1].elligiblena));
     const config = {
         type: 'doughnut',
         data: {
@@ -685,14 +685,15 @@ function buildLineChart(element, data) {
             plugins: {
                 zoom: {
                     pan: {
-                        enabled: true
+                        enabled: true,
+                        mode: 'x',
                     },
                     zoom: {
                         drag: {
                             enabled: false,
                         },
                         wheel: {
-                            enabled: false,
+                            enabled: true,
                         },
                         pinch: {
                             enabled: true,
@@ -710,12 +711,11 @@ function buildLineChart(element, data) {
 
     // Setup reset button
     element.getElementsByTagName('button')[0].onclick = () => {
-        chart.resetZoom();
+        chart.zoomScale('x', { min: labels.length - 91, max: labels.length - 1 });
     };
 
     // Setup default zoom
-    chart.zoomScale('x', { min: labels.length - 91, max: labels.length - 1 });
-
+    element.getElementsByTagName('button')[0].onclick();
 }
 
 // Fetch and organize all data
