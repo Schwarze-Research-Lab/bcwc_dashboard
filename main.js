@@ -656,7 +656,7 @@ function buildLineChart(element, data) {
             fill: (index == 0) ? true : '-1',
             borderColor: site_colors[index],
             backgroundColor: site_colors[index].replace(')', ', 0.65)'),
-            tension: 0.55
+            tension: 0.4
         });
     });
 
@@ -668,6 +668,11 @@ function buildLineChart(element, data) {
         },
         plugins: [ChartZoom],
         options: {
+            elements: {
+                point: {
+                    radius: 1.5
+                }
+            },
             scales: {
                 y: {
                     stacked: true,
