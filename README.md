@@ -1,10 +1,5 @@
 The [site](https://bcwc.surgery.wisc.edu/) is built using a modern tailwind vite stack with vanilla js
 
-## Todo List
-
-* New Pie Charts
-    * Missing Labels - Not apprached, Declined, Excluded
-
 ## Local Dev Deploy
 ```
 npm install

@@ -320,6 +320,13 @@ function buildFailureSummary(element, data) {
         options: {
             responsive: true,
             plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: context => {
+                            return ` [${context.dataset.label}]  ${context.label}: ${context.parsed}`;
+                        }
+                    }
+                },
                 legend: {
                     position: 'right',
                 },
