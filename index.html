@@ -101,13 +101,11 @@
   <div class="hidden p-2 container mx-auto my-5">
     <div id="content" class="grid grid-cols-1 xl:grid-cols-2 gap-4">
 
-      <!-- Card template -->
       <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg" data-hash="dash" id="enrollmentSummary">
         <div class="w-full">
           <h2 class="text-gray-800 text-3xl font-semibold">Total Enrollment</h2>
-          <p class="mt-2 text-gray-600"> </p>
           <div class="grid grid-cols-2 gap-4">
-            <div>
+            <div class="my-auto">
               <canvas></canvas>
             </div>
             <div class="bg-gray-100 rounded-md font-semibold leading-10 p-6 w-100">
@@ -118,20 +116,12 @@
         </div>
       </div>
 
-      <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg" data-hash="dash" id="exampleCard">
-        <div class="">
-          <h2 class="text-gray-800 text-3xl font-semibold">Pie Charts Eventually</h2>
-          <p class="mt-2 text-gray-600">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed efficitur purus id
-            augue vehicula, dapibus luctus nulla sodales. Proin suscipit elit id nibh vehicula elementum. Etiam faucibus
-            tortor eget fringilla dignissim. Mauris id interdum tortor. Sed turpis ipsum, ullamcorper sit amet lorem
-            nec, convallis tempor massa. Cras vestibulum euismod lacus quis porttitor. Proin non pharetra massa, euismod
-            euismod ligula. Aenean elementum urna in nisi ullamcorper facilisis. Suspendisse molestie enim vitae purus
-            auctor auctor sed a nibh. Phasellus efficitur, urna vitae varius dapibus, eros neque finibus nisl, vitae
-            tincidunt massa odio nec tellus. Mauris et interdum lectus. Pellentesque placerat aliquam velit. Phasellus
-            ornare turpis ac eros sollicitudin, nec efficitur odio sodales.
-          </p>
-          <div></div>
+      <div class="flex py-4 px-8 bg-white shadow-xl rounded-lg max-h-[31rem]" data-hash="dash" id="failureSummary">
+        <div class="w-full">
+          <h2 class="text-gray-800 text-3xl font-semibold">Recruitment Failures ☠</h2>
+          <div class="my-auto p-4 h-100 w-100">
+            <canvas></canvas>
+          </div>
         </div>
       </div>
 
@@ -154,6 +144,8 @@
                       aria-label="Date Range Dropdown">
                       <option value="">Select a date range</option>
                       <option value="month">This Month</option>
+                      <option value="7">Last 7 Days</option>
+                      <option value="14">Last 14 Days</option>
                       <option value="30">Last 30 Days</option>
                       <option value="60">Last 60 Days</option>
                       <option value="90">Last 90 Days</option>
@@ -211,7 +203,7 @@
         <div class="w-full">
           <div class="grid grid-cols-2">
             <div>
-              <h2 class="text-gray-800 text-3xl font-semibold">Screened Overtime</h2>
+              <h2 class="text-gray-800 text-3xl font-semibold">Average Screenings Overtime</h2>
             </div>
             <div class="flex justify-end">
               <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md max-w-xs ">

@@ -3,9 +3,8 @@ The [site](https://bcwc.surgery.wisc.edu/) is built using a modern tailwind vite
 ## Todo List
 
 * New Pie Charts
-    * Study Status - Not apprached, Declined, Excluded
-* Line Chart 
-    * Playing with it
+    * Missing Labels - Not apprached, Declined, Excluded
+    * Obvious sizing issue
 
 ## Local Dev Deploy
 ```

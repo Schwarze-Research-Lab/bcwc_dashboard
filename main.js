@@ -16,12 +16,36 @@ let rangeDates = {
 // MDY toLocalDate config
 const mdy_date = { year: 'numeric', month: '2-digit', day: '2-digit' };
 
-// Study Status Options and Colors
-const study_statuses = ["Screened", "Elligible", "Elligible (NA)", "Enrolled", "Declined", "Excluded"];
-const status_colors = ['#FF8B00', '#1668BD', '', '#349C55', '#74226C', '#BA3B46'];
+// Study Status Options
+const study_status = {
+    screened: {
+        name: "Screen Fail",
+        color: "#FF8B00",
+    },
+    elligible: {
+        name: "Elligible",
+        color: "#1668BD",
+    },
+    elligiblena: {
+        name: "Elligible (NA)",
+        color: "",
+    },
+    enrolled: {
+        name: "Enrolled",
+        color: "#349C55",
+    },
+    declined: {
+        name: "Declined",
+        color: "#74226C",
+    },
+    excluded: {
+        name: "Excluded",
+        color: "#BA3B46",
+    },
+};
 
 // Mapping for site info between various codes
-const site_map = {
+const sites = {
     94: {
         'short': 'C',
         'display': 'Col'
@@ -68,19 +92,6 @@ const colorRangeInfo = {
     colorEnd: 1,
     useEndAsStart: false,
 };
-
-// Util Func - Stolen from online, returns the iso week number
-Date.prototype.getWeek = function () {
-    var date = new Date(this.getTime());
-    date.setHours(0, 0, 0, 0);
-    // Thursday in current week decides the year.
-    date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-    // January 4 is always in week 1.
-    var week1 = new Date(date.getFullYear(), 0, 4);
-    // Adjust to Thursday in week 1 and count number of weeks from date to week1.
-    return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
-        - 3 + (week1.getDay() + 6) % 7) / 7);
-}
 
 init();
 
@@ -142,14 +153,13 @@ function init() {
 // Main Build function for dashboard
 function buildDashboard() {
 
-    // Page hashes and other static content are defined in HTML
-
     // Finish color config
-    site_colors = interpolateColors(Object.keys(site_map).length, colorScale, colorRangeInfo);
+    site_colors = interpolateColors(Object.keys(sites).length, colorScale, colorRangeInfo);
 
     // Get Data and build summary
     let data = getEnrollemntData();
     buildSummary(document.getElementById('enrollmentSummary'), data);
+    buildFailureSummary(document.getElementById('failureSummary'), data);
 
     // Setup date dropdown
     buildDateDropdown();
@@ -246,7 +256,7 @@ function buildSummary(element, data) {
     insert2colRow(table, "Study Age", Math.round(data.months_study_active, 1) + "<sm>months<sm>");
 
     // Generate the chart
-    const labels = Object.keys(data.site).map(x => site_map[x].display);
+    const labels = Object.keys(data.site).map(x => sites[x].display);
     const config = {
         type: 'doughnut',
         data: {
@@ -281,6 +291,57 @@ function buildSummary(element, data) {
     new Chart(canvas, config);
 }
 
+function buildFailureSummary(element, data) {
+
+    // Generate the chart
+    console.log(Object.entries(data.site).map(x => x[1].elligiblena));
+    const config = {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(data.site).map(x => sites[x].display),
+            datasets: [{
+                label: "Not Approached",
+                data: Object.entries(data.site).map(x => x[1].elligiblena),
+                backgroundColor: site_colors,
+                hoverOffset: 4
+            }, {
+                label: "Declined",
+                data: Object.entries(data.site).map(x => x[1].declined),
+                backgroundColor: site_colors,
+                hoverOffset: 4
+            }, {
+                label: "Excluded",
+                data: Object.entries(data.site).map(x => x[1].excluded),
+                backgroundColor: site_colors,
+                hoverOffset: 4
+            }]
+        },
+        plugins: [ChartDataLabels],
+        options: {
+            responsive: true,
+            plugins: {
+                datalabels: {
+                    formatter: (value, ctx) => {
+                        let sum = 0;
+                        let dataArr = ctx.chart.data.datasets[0].data;
+                        dataArr.map(data => {
+                            sum += data;
+                        });
+                        let p = (value * 100 / sum).toFixed(0);
+                        return p < 5 ? "" : p + "%";
+                    },
+                    color: '#ffffff',
+                },
+            }
+        }
+    };
+
+    // Paint to screen
+    const canvas = element.getElementsByTagName('canvas')[0];
+    new Chart(canvas, config);
+
+}
+
 // Build the table that is time range dependent
 function buildTable(element, data) {
 
@@ -288,11 +349,11 @@ function buildTable(element, data) {
     let cell;
     let cssTable = document.getElementById('siteTable');
     const offset = window.location.hostname == 'localhost' ? 2 : 1;
-    cssTable.style.gridTemplateColumns = `repeat(${Object.keys(site_map).length + offset}, minmax(0, 1fr))`;
+    cssTable.style.gridTemplateColumns = `repeat(${Object.keys(sites).length + offset}, minmax(0, 1fr))`;
     let start = document.getElementById('startDate').value || '2000-01-01';
     let end = document.getElementById('endDate').value || '3000-01-01';
 
-    // Remove anything that was previously added
+    // Remove anything that was previously added (i.e. date range change)
     var target = cssTable.getElementsByTagName("div"), index;
     for (index = target.length - 1; index >= 0; index--) {
         target[index].parentNode.removeChild(target[index]);
@@ -302,8 +363,8 @@ function buildTable(element, data) {
     cell = document.createElement('div');
     cell.innerHTML = `<b></b>`;
     cssTable.appendChild(cell);
-    const labels = Object.keys(data.site).map(x => site_map[x].display);
-    Object.values(site_map).forEach(siteInfo => {
+    const labels = Object.keys(data.site).map(x => sites[x].display);
+    Object.values(sites).forEach(siteInfo => {
         if (siteInfo.short == "UNK" && window.location.hostname != "localhost") {
             return;
         }
@@ -316,38 +377,40 @@ function buildTable(element, data) {
     cell.innerHTML = `<b>Total</b>`;
     cssTable.appendChild(cell);
 
-    // Populate table
+    // Populate Study Status Rows, gather t0 and t1 stats as we go
     let surveyComplete = {
         t0: {},
         t1: {},
     };
-    study_statuses.forEach(title => {
+    Object.entries(study_status).forEach(entry => {
+
+        let [statusCode, statusInfo] = entry;
         cell = document.createElement('div');
         cell.classList.add('overflow-hidden');
-        let displayTitle = title == "Screened" ? "Screen Fail" : title;
-        cell.innerHTML = `<b>${displayTitle}</b>`;
+        cell.innerHTML = `<b>${statusInfo.name}</b>`;
         cssTable.appendChild(cell);
         let rowTotal = 0;
-        Object.entries(site_map).forEach(entry => {
+
+        Object.entries(sites).forEach(entry => {
             let [siteCode, siteInfo] = entry;
             if (siteCode == 999 && window.location.hostname != "localhost") {
                 return;
             }
             cell = document.createElement('div');
-            cell.innerHTML = title == "Screened" ? `<b class="text-red-600">0</b>` : `<b>0</b>`;
+            cell.innerHTML = statusCode == "screened" ? `<b class="text-red-600">0</b>` : `<b>0</b>`;
             if (data.site[siteCode]) {
                 let tmp = 0;
                 Object.entries(data.time_series).forEach(timeEntry => {
                     let [date, siteData] = timeEntry;
                     if (date >= start && date <= end && siteData[siteCode]) {
-                        tmp += siteData[siteCode][title.toLowerCase().replace(/[\(\) ]/g, '')];
+                        tmp += siteData[siteCode][statusCode];
                         surveyComplete.t0[siteCode] = surveyComplete.t0[siteCode] || 0;
                         surveyComplete.t0[siteCode] += siteData[siteCode]['t0complete'] || 0;
                         surveyComplete.t1[siteCode] = surveyComplete.t1[siteCode] || 0;
                         surveyComplete.t1[siteCode] += siteData[siteCode]['t1complete'] || 0;
                     }
                 });
-                if (title == "Screened" && tmp <= 15) {
+                if (statusCode == "screened" && tmp <= 15) {
                     cell.innerHTML = `<b class="text-red-600">${tmp}</b>`;
                 } else {
                     cell.innerHTML = `<b>${tmp}</b>`;
@@ -366,9 +429,9 @@ function buildTable(element, data) {
     cell.classList.add('overflow-hidden');
     cell.innerHTML = `<b>% Elligible</b>`;
     cssTable.appendChild(cell);
-    const rowSize = Object.keys(site_map).length + (window.location.hostname == 'localhost' ? 2 : 1);
+    const rowSize = Object.keys(sites).length + (window.location.hostname == 'localhost' ? 2 : 1);
     const grid = document.getElementById("siteTable").getElementsByTagName('div');
-    Object.entries(site_map).forEach((entry, index) => {
+    Object.entries(sites).forEach((entry, index) => {
         let [siteCode, siteInfo] = entry;
         cell = document.createElement('div');
         cell.innerHTML = `<b></b>`;
@@ -398,12 +461,12 @@ function buildTable(element, data) {
         cssTable.appendChild(cell);
 
         let total = 0;
-        Object.entries(site_map).forEach(entry => {
+        Object.entries(sites).forEach(entry => {
             let [siteCode, siteInfo] = entry;
             cell = document.createElement('div');
             cell.innerHTML = `<b></b>`;
             if (siteCode != 999 && data.site[siteCode]) {
-                let tmp = surveyComplete[title.split(' ')[0].toLowerCase()][siteCode] / 6;
+                let tmp = surveyComplete[title.split(' ')[0].toLowerCase()][siteCode] || 0 / Object.keys(study_status).length;
                 cell.innerHTML = `<b>${tmp}</b>`;
                 total += tmp;
             }
@@ -440,7 +503,7 @@ function buildTable(element, data) {
         cell.classList.add('overflow-hidden');
         cell.innerHTML = `<b>${rowConfig.title}</b>`;
         cssTable.appendChild(cell);
-        Object.entries(site_map).forEach(entry => {
+        Object.entries(sites).forEach(entry => {
             let [siteCode, siteInfo] = entry;
             cell = document.createElement('div');
             cell.classList.add(...borderClass);
@@ -472,16 +535,17 @@ function buildBarChart(element, data) {
     const end = document.getElementById('endDate').value || '3000-01-01';
 
     // Generate the chart
-    const labels = Object.keys(data.site).map(x => site_map[x].display);
+    const labels = Object.keys(data.site).map(x => sites[x].display);
     let dataSet = [];
 
     // For the 3 status types
-    study_statuses.forEach((title, index) => {
+    Object.entries(study_status).forEach(entry => {
 
+        let [statusCode, statusInfo] = entry;
         let innerData = [];
 
         // For each site
-        Object.entries(site_map).forEach(entry => {
+        Object.entries(sites).forEach(entry => {
 
             let [code, siteInfo] = entry;
             let count = 0;
@@ -490,7 +554,7 @@ function buildBarChart(element, data) {
             Object.entries(data.time_series).forEach(timeEntry => {
                 let [date, siteData] = timeEntry;
                 if (siteData[code] && (date >= start) && (date <= end)) {
-                    count += siteData[code][title.toLowerCase().replace(/[\(\) ]/g, '')];
+                    count += siteData[code][statusCode];
                 }
             });
             innerData.push(count);
@@ -498,8 +562,8 @@ function buildBarChart(element, data) {
 
         dataSet.push({
             data: innerData,
-            backgroundColor: status_colors[index],
-            label: title == "Screened" ? "Screen Fail" : title
+            backgroundColor: statusInfo.color,
+            label: statusInfo.name
         });
 
     });
@@ -531,45 +595,66 @@ function buildBarChart(element, data) {
 
 function buildLineChart(element, data) {
 
-    // Set start to first Sunday of the month of first screen
+    // Set start to X days past the first screen
+    const windowSize = 14;
     let dt = new Date(data.date_of_first_screen);
-    dt.setDate(1);
-    while (dt.getDay() != 0) {
+    dt.setDate(dt.getDate() + windowSize);
+
+    // Generate the datasets by week, build out labels as we go
+    let timeData = {};
+    let labels = [];
+    let start = new Date(dt);
+    let stop = new Date();
+    stop = stop.getTime();
+
+    while (dt.getTime() < stop) {
+
+        let daysPast = Math.round((dt.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+        labels.push(dt.toLocaleDateString("en-US", mdy_date));
+
+        Object.entries(sites).forEach(entry => {
+
+            let [code, siteInfo] = entry;
+            if (window.location.hostname != "localhost" && code == 999) {
+                return;
+            }
+            timeData[code] = timeData[code] || {};
+
+            let avg = 0;
+            for (let i = 0; i < windowSize; i++) {
+
+                let date = new Date(dt);
+                date.setDate(date.getDate() - i);
+                let ymd = date.toISOString().split('T')[0];
+                if (data.time_series[ymd] && data.time_series[ymd][code] && data.time_series[ymd][code].screened) {
+                    avg += data.time_series[ymd][code].screened;
+                }
+
+            }
+            timeData[code][daysPast] = avg / windowSize;
+
+        });
+
         dt.setDate(dt.getDate() + 1);
     }
 
-    // Build out labels (Sundays of every week)
-    let stop = new Date();
-    stop = stop.getTime();
-    let labels = [];
-    while (dt.getTime() < stop) {
-        labels.push(dt.toLocaleDateString("en-US", mdy_date));
-        dt.setDate(dt.getDate() + 7);
-    }
-
-    // Generate the datasets by week
+    // Reorganize all the datasets for sites
     let dataSets = [];
-    Object.entries(site_map).forEach((entry, index) => {
+    Object.entries(sites).forEach((entry, index) => {
         let [code, siteInfo] = entry;
+
         if (window.location.hostname != "localhost" && code == 999) {
             return;
         }
-        let weeklyData = new Array(labels.length).fill(0);
-        Object.entries(data.time_series).forEach(timeInfo => {
-            let [date, dateInfo] = timeInfo;
-            if (!dateInfo[code]) {
-                return;
-            }
-            let dt = new Date(date);
-            weeklyData[dt.getWeek()] += dateInfo[code].screened;
-        });
+
         dataSets.push({
             label: siteInfo.display,
-            data: weeklyData,
+            data: Object.values(timeData[code]),
             fill: (index == 0) ? true : '-1',
             borderColor: site_colors[index],
-            backgroundColor: site_colors[index].replace(')', ', 0.25)')
-        })
+            backgroundColor: site_colors[index].replace(')', ', 0.65)'),
+            tension: 0.55
+        });
     });
 
     const config = {
@@ -584,13 +669,13 @@ function buildLineChart(element, data) {
                 y: {
                     stacked: true,
                     ticks: {
-                        stepSize: 20
+                        stepSize: 5
                     }
                 },
                 x: {
                     ticks: {
                         autoSkip: true,
-                        maxTicksLimit: Math.round(labels.length / 2)
+                        maxTicksLimit: 20
                     }
                 }
             },
@@ -601,10 +686,10 @@ function buildLineChart(element, data) {
                     },
                     zoom: {
                         drag: {
-                            enabled: true,
+                            enabled: false,
                         },
                         wheel: {
-                            enabled: true,
+                            enabled: false,
                         },
                         pinch: {
                             enabled: true,
@@ -624,6 +709,9 @@ function buildLineChart(element, data) {
     element.getElementsByTagName('button')[0].onclick = () => {
         chart.resetZoom();
     };
+
+    // Setup default zoom
+    chart.zoomScale('x', { min: labels.length - 91, max: labels.length - 1 });
 
 }
 
@@ -653,6 +741,9 @@ function getEnrollemntData() {
             // - weeks_active
             // - months_enrolled
             // - date_of_first_screen
+            // - elligiblena
+            // - excluded
+            // - declined
         },
         date_of_first_screen: "3000-01-01"
     }
@@ -687,6 +778,11 @@ function getEnrollemntData() {
         !(o.site[screenSite]) && (o.site[screenSite] = {});
         !(o.site[screenSite].screened) && (o.site[screenSite].screened = 0);
         !(o.site[screenSite].enrolled) && (o.site[screenSite].enrolled = 0);
+
+        !(o.site[screenSite].elligiblena) && (o.site[screenSite].elligiblena = 0);
+        !(o.site[screenSite].excluded) && (o.site[screenSite].excluded = 0);
+        !(o.site[screenSite].declined) && (o.site[screenSite].declined = 0);
+
         !(o.site[screenSite].months_enrolled) && (o.site[screenSite].months_enrolled = {});
         !(o.site[screenSite].date_of_first_screen) && (o.site[screenSite].date_of_first_screen = "3000-01-01");
         o.site[screenSite].screened += 1;
@@ -731,10 +827,12 @@ function getEnrollemntData() {
             if (data.decision_final && data.decision_final == "2") {
                 o.declined += 1;
                 o.time_series[date][screenSite]['declined'] += 1;
+                o.site[screenSite].declined += 1;
             }
             if (data.screen_approach_method && data.screen_approach_method == "3") {
                 o.elligiblena += 1;
                 o.time_series[date][screenSite]['elligiblena'] += 1;
+                o.site[screenSite].elligiblena += 1;
             }
             if (data.first_appt_date > (o.site[screenSite].most_recent_decline || "")) {
                 o.site[screenSite].most_recent_decline = data.first_appt_date;
@@ -748,6 +846,7 @@ function getEnrollemntData() {
         if (data.screen_neph_exclude == "1" || data.screen_rc_exclude == "1") {
             o.excluded += 1;
             o.time_series[date][screenSite]['excluded'] += 1;
+            o.site[screenSite].excluded += 1;
         }
     }
 
