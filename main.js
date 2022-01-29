@@ -320,6 +320,9 @@ function buildFailureSummary(element, data) {
         options: {
             responsive: true,
             plugins: {
+                legend: {
+                    position: 'right',
+                },
                 datalabels: {
                     formatter: (value, ctx) => {
                         let sum = 0;
@@ -328,7 +331,7 @@ function buildFailureSummary(element, data) {
                             sum += data;
                         });
                         let p = (value * 100 / sum).toFixed(0);
-                        return p < 5 ? "" : p + "%";
+                        return p < 1 ? "" : p + "%";
                     },
                     color: '#ffffff',
                 },

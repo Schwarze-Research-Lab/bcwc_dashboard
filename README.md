@@ -4,7 +4,6 @@ The [site](https://bcwc.surgery.wisc.edu/) is built using a modern tailwind vite
 
 * New Pie Charts
     * Missing Labels - Not apprached, Declined, Excluded
-    * Obvious sizing issue
 
 ## Local Dev Deploy
 ```
