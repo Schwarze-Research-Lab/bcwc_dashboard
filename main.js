@@ -79,6 +79,14 @@ const sites = {
         'short': 'WV',
         'display': 'WV'
     },
+    // 102: {
+    //     'short': 'X',
+    //     'display': 'X'
+    // },
+    // 103: {
+    //     'short': 'Y',
+    //     'display': 'Y'
+    // },
     999: {
         'short': 'UNK',
         'display': 'Unknown'
@@ -294,36 +302,87 @@ function buildSummary(element, data) {
 
 function buildFailureSummary(element, data) {
 
+    const excluded = data.excluded;
+    const declined = data.declined;
+    const notapp = data.elligiblena;
+    const sets = {
+        excluded: {
+            label: "Excluded",
+            data: Object.entries(data.site).map(x => x[1].excluded),
+            backgroundColor: site_colors,
+        },
+        declined: {
+            label: "Not Approached",
+            data: Object.entries(data.site).map(x => x[1].elligiblena),
+            backgroundColor: site_colors,
+        },
+        notapp: {
+            label: "Declined",
+            data: Object.entries(data.site).map(x => x[1].declined),
+            backgroundColor: site_colors,
+        }
+    };
+
+    // Create custom plugin for donut labels of the dataset
+    // Hard coded to place the labels on the last element of each data set
+    const donutLabelDataSets = {
+        id: 'donutLabels',
+        afterDraw(chart, args, options) {
+            const { ctx, chartArea: { top, bottom, left, right, width, height } } = chart;
+
+            // For each dataset
+            chart.data.datasets.forEach((dataset, i) => {
+
+                // Get the last element larger than 5%
+                const sum = dataset.data.reduce((x, y) => x + y);
+                const bestIndex = dataset.data.reduce((x, y, i) => {
+                    if (y > sum * 0.05) return i;
+                    return x;
+                }, 0);
+
+                const meta = chart.getDatasetMeta(i).data[bestIndex];
+                let { x, y } = meta.tooltipPosition();
+                y -= 10; // Move the start Y up a bit
+
+                const xLine = x >= width / 2 ? x + 15 : x - 15;
+                const yLine = y >= height / 2 ? y + 15 : y - 15;
+                //const underLine = x >= width / 2 ? 20 * (i + 1) : -30 * (i + 1);
+
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(xLine, yLine);
+                ctx.lineTo(0, yLine);
+                ctx.strokeStyle = '#696969';
+                ctx.stroke();
+
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText(dataset.label, 0, yLine - 2);
+
+                // No need to loop through all of them now
+                //chart.getDatasetMeta(i).data.forEach((meta, index) => { });
+            });
+        }
+    }
+
     // Generate the chart
     const config = {
         type: 'doughnut',
         data: {
             labels: Object.keys(data.site).map(x => sites[x].display),
-            datasets: [{
-                label: "Not Approached",
-                data: Object.entries(data.site).map(x => x[1].elligiblena),
-                backgroundColor: site_colors,
-                hoverOffset: 4
-            }, {
-                label: "Declined",
-                data: Object.entries(data.site).map(x => x[1].declined),
-                backgroundColor: site_colors,
-                hoverOffset: 4
-            }, {
-                label: "Excluded",
-                data: Object.entries(data.site).map(x => x[1].excluded),
-                backgroundColor: site_colors,
-                hoverOffset: 4
-            }]
+            datasets: Object.keys(sets).sort().map(e => sets[e])
         },
-        plugins: [ChartDataLabels],
+        plugins: [ChartDataLabels, donutLabelDataSets],
         options: {
             responsive: true,
+            cutout: '35%',
+            hoverOffset: 4,
+            maintainAspectRatio: false,
             plugins: {
                 tooltip: {
                     callbacks: {
                         label: context => {
-                            return ` [${context.dataset.label}]  ${context.label}: ${context.parsed}`;
+                            return [context.dataset.label, `${context.label}: ${context.parsed}`];
                         }
                     }
                 },
@@ -493,6 +552,7 @@ function buildTable(element, data) {
 
     // Populate unique rows of the table with time insensative info
     let borderClass = ['border-t', 'border-gray-400'];
+    let screenSizeClass = ['hidden', 'xl:block'];
     const staticConfig = [
         {
             title: "Recent Enroll",
@@ -509,14 +569,14 @@ function buildTable(element, data) {
     ];
     staticConfig.forEach(rowConfig => {
         cell = document.createElement('div');
-        cell.classList.add(...borderClass);
+        cell.classList.add(...borderClass, ...screenSizeClass);
         cell.classList.add('overflow-hidden');
         cell.innerHTML = `<b>${rowConfig.title}</b>`;
         cssTable.appendChild(cell);
         Object.entries(sites).forEach(entry => {
             let [siteCode, siteInfo] = entry;
             cell = document.createElement('div');
-            cell.classList.add(...borderClass);
+            cell.classList.add(...borderClass, ...screenSizeClass);
             cell.innerHTML = `<b></b>`;
             if (siteCode != 999 && data.site[siteCode] && data.site[siteCode][rowConfig.varName]) {
                 if (['most_recent_enrollment', 'most_recent_decline'].includes(rowConfig.varName)) {
@@ -531,7 +591,7 @@ function buildTable(element, data) {
             }
         });
         cell = document.createElement('div');
-        cell.classList.add(...borderClass);
+        cell.classList.add(...borderClass, screenSizeClass);
         cell.innerHTML = `<b></b>`;
         cssTable.appendChild(cell);
         borderClass = [];
@@ -695,6 +755,21 @@ function buildLineChart(element, data) {
                 }
             },
             plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: context => {
+                            let weekly = 0;
+                            for (let i = 0; i < 7; i++) {
+                                weekly += context.dataset.data[context.dataIndex - i];
+                            }
+                            return [
+                                `Site: ${context.dataset.label}`,
+                                `Avg/day (over 2 weeks): ${context.dataset.data[context.dataIndex].toFixed(2)}`,
+                                `Weekly Total (Avg): ${weekly.toFixed(2)}`
+                            ];
+                        }
+                    }
+                },
                 zoom: {
                     pan: {
                         enabled: true,
