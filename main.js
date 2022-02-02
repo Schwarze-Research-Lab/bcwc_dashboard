@@ -79,14 +79,14 @@ const sites = {
         'short': 'WV',
         'display': 'WV'
     },
-    // 102: {
-    //     'short': 'X',
-    //     'display': 'X'
-    // },
-    // 103: {
-    //     'short': 'Y',
-    //     'display': 'Y'
-    // },
+    162: {
+        'short': 'CO',
+        'display': 'CO'
+    },
+    163: {
+        'short': 'NW',
+        'display': 'NW'
+    },
     999: {
         'short': 'UNK',
         'display': 'Unknown'
@@ -162,11 +162,22 @@ function init() {
 // Main Build function for dashboard
 function buildDashboard() {
 
+
+    // Reorganize all the data
+    let data = getEnrollemntData();
+
+    // Two new sites might not have any data yet, remove them if so to prevent color issues
+    [162, 163].forEach(newSite => {
+        if (!data.site[newSite] || data.site[newSite].screened == 0) {
+            delete sites[newSite];
+            console.log("remove")
+        }
+    });
+
     // Finish color config
     site_colors = interpolateColors(Object.keys(sites).length, colorScale, colorRangeInfo);
 
     // Get Data and build summary
-    let data = getEnrollemntData();
     buildSummary(document.getElementById('enrollmentSummary'), data);
     buildFailureSummary(document.getElementById('failureSummary'), data);
 
