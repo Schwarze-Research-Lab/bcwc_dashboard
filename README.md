@@ -1,5 +1,4 @@
-The [site](https://bcwc.surgery.wisc.edu/) is built using a modern tailwind vite stack with vanilla js. The primary library used is chart.js for all visuals.
-Feel free to lift code from here for your own dashboard. 
+The [site](https://bcwc.surgery.wisc.edu/) is built using a modern tailwind vite stack with vanilla js. The site is only acceissable to those on the UW network. The primary library used is chart.js for all visuals. Feel free to lift code from here for your own dashboard. 
 
 ## Local Dev Deploy
 ```
@@ -19,6 +18,7 @@ npm run deploy
 * Get a static IP issued by wisc from [here](https://access.services.wisc.edu/IPaddress)
 * Reach out to Paul Vreugdenhil for credenitals for a first time connection
   * Currently there is one end user account on the server named "bcwc", credentials are shared.
+* Connect to the UW VPN via the static account you are assigned. You will need to connect to the VPN to deploy even when on the UW net.
 * `ssh bcwc@bcwc.surgery.wisc.edu` and install an ssh key like normal. 
 * A symlink in the home directy points to the root of the webserver
 
