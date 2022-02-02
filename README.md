@@ -1,4 +1,5 @@
-The [site](https://bcwc.surgery.wisc.edu/) is built using a modern tailwind vite stack with vanilla js
+The [site](https://bcwc.surgery.wisc.edu/) is built using a modern tailwind vite stack with vanilla js. The primary library used is chart.js for all visuals.
+Feel free to lift code from here for your own dashboard. 
 
 ## Local Dev Deploy
 ```
