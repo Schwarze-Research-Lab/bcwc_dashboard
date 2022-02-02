@@ -170,7 +170,6 @@ function buildDashboard() {
     [162, 163].forEach(newSite => {
         if (!data.site[newSite] || data.site[newSite].screened == 0) {
             delete sites[newSite];
-            console.log("remove")
         }
     });
 
@@ -546,7 +545,7 @@ function buildTable(element, data) {
             cell = document.createElement('div');
             cell.innerHTML = `<b></b>`;
             if (siteCode != 999 && data.site[siteCode]) {
-                let tmp = surveyComplete[title.split(' ')[0].toLowerCase()][siteCode] || 0 / Object.keys(study_status).length;
+                let tmp = (surveyComplete[title.split(' ')[0].toLowerCase()][siteCode] || 0) / Object.keys(study_status).length;
                 cell.innerHTML = `<b>${tmp}</b>`;
                 total += tmp;
             }
@@ -888,8 +887,8 @@ function getEnrollemntData() {
         !(o.site[screenSite].date_of_first_screen) && (o.site[screenSite].date_of_first_screen = "3000-01-01");
         o.site[screenSite].screened += 1;
 
-        if (data.screen_datetime < o.site[screenSite].date_of_first_screen) {
-            o.site[screenSite].date_of_first_screen = data.screen_datetime;
+        if (data.first_appt_date < o.site[screenSite].date_of_first_screen) {
+            o.site[screenSite].date_of_first_screen = data.first_appt_date;
         }
 
         if (data.rescreen_me == "1") {
@@ -907,8 +906,8 @@ function getEnrollemntData() {
             !(o.site[screenSite].months_enrolled[month]) && (o.site[screenSite].months_enrolled[month] = 0);
             o.site[screenSite].months_enrolled[month] += 1;
 
-            if (data.screen_datetime > (o.site[screenSite].most_recent_enrollment || "")) {
-                o.site[screenSite].most_recent_enrollment = data.screen_datetime;
+            if (data.first_appt_date > (o.site[screenSite].most_recent_enrollment || "")) {
+                o.site[screenSite].most_recent_enrollment = data.first_appt_date;
             }
 
             if (data.facit_t0_complete == "1") {
