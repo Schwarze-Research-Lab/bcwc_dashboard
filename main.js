@@ -568,10 +568,10 @@ function buildTable(element, data) {
             title: "Recent Enroll",
             varName: "most_recent_enrollment"
         },
-        {
-            title: "Recent Decline",
-            varName: "most_recent_decline"
-        },
+        // {
+        //     title: "Recent Decline",
+        //     varName: "most_recent_decline"
+        // },
         {
             title: "Time Active",
             varName: "months_active"
@@ -590,7 +590,7 @@ function buildTable(element, data) {
             cell.innerHTML = `<b></b>`;
             if (siteCode != 999 && data.site[siteCode] && data.site[siteCode][rowConfig.varName]) {
                 if (['most_recent_enrollment', 'most_recent_decline'].includes(rowConfig.varName)) {
-                    cell.innerHTML = `<b>${(new Date(data.site[siteCode][rowConfig.varName])).toLocaleDateString("en-US", mdy_date)}</b>`;
+                    cell.innerHTML = `<b>${(new Date(data.site[siteCode][rowConfig.varName] + "T00:00")).toLocaleDateString("en-US", mdy_date)}</b>`;
                 }
                 else {
                     cell.innerHTML = `<b>${Math.round(data.site[siteCode][rowConfig.varName])}<sm>months</sm></b>`;
