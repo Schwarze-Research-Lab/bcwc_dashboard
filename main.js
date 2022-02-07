@@ -20,7 +20,7 @@ const mdy_date = { year: 'numeric', month: '2-digit', day: '2-digit' };
 // Study Status Options
 const study_status = {
     screened: {
-        name: "Screen Fail",
+        name: "Screened",
         color: "#FF8B00",
     },
     elligible: {
@@ -265,7 +265,7 @@ function buildSummary(element, data) {
 
     // Build Summary Table
     const table = element.getElementsByTagName('table')[0];
-    insert2colRow(table, "Screen Fail", data.screened);
+    insert2colRow(table, "Screened", data.screened);
     insert2colRow(table, "Elligible", data.elligible);
     insert2colRow(table, "Elligible <sm>(Not approached)</sm>", data.elligiblena);
     insert2colRow(table, "Enrolled", data.enrolled);
@@ -643,10 +643,15 @@ function buildBarChart(element, data) {
         dataSet.push({
             data: innerData,
             backgroundColor: statusInfo.color,
-            label: statusInfo.name
+            label: statusCode == "screened" ? "Screen Fail" : statusInfo.name
         });
 
     });
+
+    // Reduce the Screen Fails, they currently track total screen and not failures
+    for (let i = 0; i < Object.keys(dataSet[0].data).length; i++) {
+        dataSet[0].data[i] = dataSet[0].data[i] - dataSet.slice(1).reduce((a, b) => a + b.data[i], 0);
+    }
 
     const config = {
         type: 'bar',
